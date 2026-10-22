@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light" data-font="m">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Polski Trener · Тренажёр польского</title>
+<style>
+:root{
+  --bg:#f6f8fb; --card:#fff; --card-2:#f9fafb; --text:#1f2937; --muted:#6b7280;
+  --accent:#dc2626; --accent-2:#ef4444; --green:#16a34a; --blue:#2563eb;
+  --amber:#d97706; --purple:#7c3aed; --border:#e5e7eb; --border-2:#d1d5db;
+  --shadow:0 10px 25px rgba(0,0,0,.06); --shadow-2:0 4px 12px rgba(0,0,0,.05);
+  --radius:18px; --font-size:1rem;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#0f172a; --card:#1e293b; --card-2:#334155; --text:#e2e8f0; --muted:#94a3b8;
+  --border:#334155; --border-2:#475569;
+  --shadow:0 10px 25px rgba(0,0,0,.3); --shadow-2:0 4px 12px rgba(0,0,0,.2);
+}
+[data-theme="dark"] .word-pl{color:#f87171}
+[data-theme="dark"] .grade-again{background:#7f1d1d;border-color:#991b1b;color:#fecaca}
+[data-theme="dark"] .grade-hard{background:#78350f;border-color:#92400e;color:#fed7aa}
+[data-theme="dark"] .grade-good{background:#14532d;border-color:#166534;color:#bbf7d0}
+[data-theme="dark"] .grade-easy{background:#1e3a8a;border-color:#1e40af;color:#bfdbfe}
+[data-theme="dark"] .flash-back{background:#2a1f1f}
+[data-theme="dark"] .option.correct{background:#14532d;border-color:#16a34a;color:#bbf7d0}
+[data-theme="dark"] .option.wrong{background:#7f1d1d;border-color:#dc2626;color:#fecaca}
+[data-theme="dark"] .match-item.matched{background:#14532d;border-color:#16a34a}
+[data-theme="dark"] .feedback.ok{background:#14532d;color:#bbf7d0}
+[data-theme="dark"] .feedback.bad{background:#7f1d1d;color:#fecaca}
+[data-theme="dark"] .gender-options button.correct{background:#14532d;color:#bbf7d0}
+[data-theme="dark"] .gender-options button.wrong{background:#7f1d1d;color:#fecaca}
+[data-font="s"]{--font-size:.9rem}
+[data-font="m"]{--font-size:1rem}
+[data-font="l"]{--font-size:1.12rem}
+*{box-sizing:border-box}
+html,body{font-size:var(--font-size)}
+body{margin:0;font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .2s,color .2s}
+.app{max-width:960px;margin:0 auto;padding:16px 14px 60px}
+
+/* HEADER */
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+h1{font-size:1.35rem;margin:0;letter-spacing:-.02em}
+h1 span{color:var(--accent)}
+.header-stats{display:flex;gap:10px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);width:100%;order:3}
+.header-stats b{color:var(--text)}
+.header-badges{display:flex;gap:6px;align-items:center}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:10px;background:var(--card);border:1px solid var(--border);font-size:.82rem;font-weight:600;cursor:help;transition:.15s}
+.badge b{color:var(--accent);font-weight:700}
+.badge.streak b{color:var(--amber)}
+.icon-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;width:38px;height:38px;font-size:1.1rem;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;color:var(--text)}
+.icon-btn:hover{background:var(--card-2);transform:rotate(15deg)}
+
+/* PANEL */
+.panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-2);padding:14px;margin-bottom:12px;border:1px solid var(--border);transition:background .2s,border-color .2s}
+.label{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:6px}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-family:inherit;font-size:.82rem;padding:7px 11px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;transition:.15s;white-space:nowrap;font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.chip:hover{background:var(--card-2);border-color:var(--border-2)}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.active:hover{background:var(--accent-2)}
+.mode-chip.active{background:var(--blue);border-color:var(--blue)}
+.mode-chip.active:hover{background:#1d4ed8}
+.group-label{font-size:.66rem;text-transform:uppercase;color:var(--muted);font-weight:700;margin:8px 0 4px;letter-spacing:.05em}
+.group-label:first-child{margin-top:0}
+
+/* PROGRESS */
+.progress-wrap{height:7px;background:var(--border);border-radius:999px;overflow:hidden;margin-bottom:5px}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:999px;transition:width .4s ease}
+.progress-text{display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted);margin-bottom:8px}
+.session-bar{display:flex;gap:14px;font-size:.8rem;color:var(--muted);padding:7px 11px;background:var(--card-2);border-radius:10px;margin-bottom:12px;flex-wrap:wrap}
+.session-bar b{color:var(--text)}
+.session-bar .ok{color:var(--green)}
+.session-bar .bad{color:var(--accent)}
+.session-bar .streak{color:var(--amber)}
+
+#contentArea{min-height:280px;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+/* FLASHCARD */
+.flashcard{perspective:1200px;margin:4px 0 12px}
+.flashcard-inner{position:relative;width:100%;min-height:230px;transition:transform .45s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d;cursor:pointer}
+.flashcard.flipped .flashcard-inner{transform:rotateY(180deg)}
+.flash-face{position:absolute;inset:0;backface-visibility:hidden;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-2);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 18px;text-align:center}
+.flash-back{transform:rotateY(180deg);background:var(--card-2)}
+.word-pl{font-size:clamp(1.7rem,5.5vw,2.7rem);font-weight:800;letter-spacing:-.03em;margin:0;color:var(--accent);word-break:break-word}
+.word-ru{font-size:clamp(1.4rem,4.5vw,2.1rem);font-weight:700;margin:0;color:var(--text);word-break:break-word}
+.word-ex{font-size:.92rem;color:var(--text);margin-top:12px;font-style:italic;max-width:90%}
+.word-ex-ru{font-size:.82rem;color:var(--muted);margin-top:4px;font-style:italic}
+.word-meta{font-size:.8rem;color:var(--muted);margin-top:8px}
+.hint{font-size:.78rem;color:var(--muted);margin-top:8px}
+
+.grade-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+.grade-row button{font-size:.8rem;padding:11px 4px;border-radius:12px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-weight:600;transition:.15s;font-family:inherit;color:var(--text)}
+.grade-again{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
+.grade-again:hover{background:#fee2e2}
+.grade-hard{background:#fffbeb;border-color:#fde68a;color:#b45309}
+.grade-hard:hover{background:#fef3c7}
+.grade-good{background:#f0fdf4;border-color:#bbf7d0;color:#15803d}
+.grade-good:hover{background:#dcfce7}
+.grade-easy{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}
+.grade-easy:hover{background:#dbeafe}
+
+/* QUIZ */
+.quiz-question{text-align:center;margin:4px 0 14px}
+.quiz-question .word-pl{font-size:clamp(1.6rem,5vw,2.4rem)}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.option{padding:13px 10px;font-size:.92rem;text-align:center;border-radius:14px;border:2px solid var(--border);background:var(--card);cursor:pointer;transition:.15s;font-weight:500;font-family:inherit;color:var(--text)}
+.option:hover:not(:disabled){border-color:var(--border-2);background:var(--card-2)}
+.option.correct{background:#dcfce7;border-color:var(--green);color:#166534}
+.option.wrong{background:#fee2e2;border-color:var(--accent-2);color:#991b1b}
+.option:disabled{cursor:default;opacity:.9}
+
+/* TYPING */
+.typing-box{text-align:center;padding:6px 0}
+.typing-target{font-size:clamp(1.4rem,4.5vw,2rem);font-weight:700;margin:4px 0 6px;color:var(--text)}
+.typing-hint{font-size:.82rem;color:var(--muted);margin-bottom:12px}
+.typing-input{width:100%;max-width:440px;padding:13px 16px;font-size:1.1rem;border-radius:14px;border:2px solid var(--border);text-align:center;outline:none;font-family:inherit;transition:.15s;color:var(--text);background:var(--card)}
+.typing-input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(37,99,235,.12)}
+.typing-input.correct{border-color:var(--green);background:#f0fdf4;color:#166534}
+.typing-input.wrong{border-color:var(--accent-2);background:#fef2f2;color:#991b1b}
+[data-theme="dark"] .typing-input.correct{background:#14532d}
+[data-theme="dark"] .typing-input.wrong{background:#7f1d1d}
+.typing-input:disabled{opacity:.85}
+.diacritics{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.diacritics button{padding:7px 11px;min-width:38px;border-radius:10px;border:1px solid var(--border);background:var(--card-2);font-size:.95rem;cursor:pointer;font-family:inherit;color:var(--text);font-weight:600}
+.diacritics button:hover{background:var(--border)}
+
+/* SCRAMBLE */
+.scramble-box{text-align:center;padding:4px 0}
+.scramble-built{min-height:52px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;padding:10px;background:var(--card-2);border-radius:12px;border:2px dashed var(--border);margin:10px 0;font-size:1.15rem;color:var(--muted);cursor:pointer;transition:.15s}
+.scramble-built.filled{border-color:var(--blue);background:#eff6ff;color:var(--text)}
+[data-theme="dark"] .scramble-built.filled{background:#1e3a8a;border-color:var(--blue)}
+.scramble-tiles{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:10px}
+.letter-tile{padding:11px 15px;min-width:46px;font-size:1.15rem;font-weight:700;border-radius:12px;border:2px solid var(--border);background:var(--card);cursor:pointer;transition:.15s;color:var(--text);font-family:inherit}
+.letter-tile:hover:not(:disabled){border-color:var(--blue);background:#eff6ff}
+[data-theme="dark"] .letter-tile:hover:not(:disabled){background:#1e3a8a}
+.letter-tile:disabled{opacity:.25;cursor:default}
+.letter-tile.placed{padding:9px 13px;min-width:40px;background:#eff6ff;border-color:var(--blue);color:var(--blue)}
+[data-theme="dark"] .letter-tile.placed{background:#1e3a8a}
+
+/* FEEDBACK */
+.feedback-area{text-align:center;margin-top:14px;min-height:32px}
+.feedback{padding:11px 16px;border-radius:12px;font-weight:600;display:inline-block;margin-bottom:10px;animation:fadeIn .2s ease}
+.feedback.ok{background:#dcfce7;color:#166534}
+.feedback.bad{background:#fee2e2;color:#991b1b}
+.feedback.warn{background:#fef3c7;color:#92400e}
+.btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:12px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;display:inline-flex;align-items:center;gap:6px;margin:3px}
+.btn:hover{background:var(--card-2);border-color:var(--border-2)}
+.btn-primary{background:var(--accent);border:none;color:#fff;padding:12px 22px;border-radius:12px;font-size:.92rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;display:inline-flex;align-items:center;gap:6px;margin:4px}
+.btn-primary:hover{background:var(--accent-2)}
+.btn-blue{background:var(--blue);border:none;color:#fff;padding:12px 22px;border-radius:12px;font-size:.92rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;display:inline-flex;align-items:center;gap:6px;margin:4px}
+.btn-blue:hover{background:#1d4ed8}
+.btn-danger{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
+[data-theme="dark"] .btn-danger{background:#7f1d1d;border-color:#991b1b;color:#fecaca}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);padding:9px 14px;border-radius:12px;font-size:.85rem;cursor:pointer;font-family:inherit;transition:.15s;display:inline-flex;align-items:center;gap:5px;margin:3px}
+.btn-ghost:hover{background:var(--card-2);color:var(--text)}
+.btn:disabled,.btn-primary:disabled,.btn-blue:disabled,.btn-ghost:disabled{opacity:.5;cursor:not-allowed}
+
+/* MATCHING */
+.matching-header{text-align:center;margin-bottom:10px;color:var(--muted);font-size:.88rem}
+.matching-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.match-col{display:flex;flex-direction:column;gap:6px}
+.match-item{padding:11px 8px;border-radius:12px;border:2px solid var(--border);background:var(--card);cursor:pointer;transition:.15s;font-size:.92rem;text-align:center;font-family:inherit;color:var(--text);font-weight:500}
+.match-item:hover:not(:disabled):not(.matched){border-color:var(--border-2);background:var(--card-2)}
+.match-item.selected{border-color:var(--blue);background:#eff6ff;color:var(--blue)}
+[data-theme="dark"] .match-item.selected{background:#1e3a8a}
+.match-item.matched{border-color:var(--green);background:#f0fdf4;color:var(--green);opacity:.6;cursor:default}
+.match-item.shake{animation:shake .4s ease;border-color:var(--accent-2);background:#fef2f2}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* GENDER */
+.gender-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:480px;margin:14px auto 0}
+.gender-options button{padding:14px 6px;font-size:.9rem;font-weight:600;border-radius:14px;border:2px solid var(--border);background:var(--card);cursor:pointer;transition:.15s;font-family:inherit;color:var(--text)}
+.gender-options button:hover:not(:disabled){border-color:var(--border-2);background:var(--card-2)}
+.gender-options button.correct{background:#dcfce7;border-color:var(--green);color:#166534}
+.gender-options button.wrong{background:#fee2e2;border-color:var(--accent-2);color:#991b1b}
+.gender-options button:disabled{cursor:default}
+
+/* DASHBOARD */
+.dashboard{display:flex;flex-direction:column;gap:14px}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.stat-card{padding:12px;border-radius:14px;background:var(--card-2);border:1px solid var(--border);text-align:center}
+.stat-card .num{font-size:1.5rem;font-weight:800;color:var(--accent);line-height:1.1}
+.stat-card .lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;font-weight:600}
+.stat-card.green .num{color:var(--green)}
+.stat-card.blue .num{color:var(--blue)}
+.stat-card.amber .num{color:var(--amber)}
+.section-title{font-size:.9rem;font-weight:700;margin:6px 0 4px;color:var(--text)}
+.level-bars{display:flex;gap:4px;align-items:flex-end;height:80px;margin-top:8px}
+.level-bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.level-bar .bar{width:100%;background:linear-gradient(180deg,var(--accent),var(--accent-2));border-radius:6px 6px 0 0;transition:height .4s ease;min-height:3px}
+.level-bar .cnt{font-size:.72rem;font-weight:700;color:var(--text)}
+.level-bar .lvl{font-size:.7rem;color:var(--muted)}
+.activity-bars{display:flex;gap:2px;align-items:flex-end;height:50px;margin-top:8px;padding:0 2px}
+.activity-bar{flex:1;background:var(--accent);border-radius:3px 3px 0 0;min-height:2px;opacity:.85;transition:height .4s ease}
+.leech-list{display:flex;flex-direction:column;gap:4px;margin-top:6px;max-height:300px;overflow-y:auto}
+.leech-item{display:flex;justify-content:space-between;align-items:center;padding:8px 11px;border-radius:10px;background:var(--card-2);cursor:pointer;transition:.12s;gap:8px}
+.leech-item:hover{background:var(--border)}
+.leech-item .pl{font-weight:700;color:var(--accent)}
+.leech-item .ru{font-size:.88rem;color:var(--muted)}
+.leech-item .badge-wrong{background:#fee2e2;color:#b91c1c;font-size:.72rem;padding:2px 7px;border-radius:7px;font-weight:700}
+[data-theme="dark"] .leech-item .badge-wrong{background:#7f1d1d;color:#fecaca}
+.due-card{padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));border-radius:14px;color:#fff;text-align:center}
+.due-card .num{font-size:1.8rem;font-weight:800}
+.due-card .lbl{font-size:.78rem;opacity:.9;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+
+/* DICT */
+.dict-search{width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--border);font-size:.92rem;margin-bottom:10px;font-family:inherit;outline:none;background:var(--card);color:var(--text)}
+.dict-search:focus{border-color:var(--blue)}
+.dict-list{display:flex;flex-direction:column;gap:5px;max-height:500px;overflow-y:auto}
+.dict-item{display:flex;align-items:center;justify-content:space-between;padding:9px 11px;border-radius:10px;background:var(--card-2);gap:10px;cursor:pointer;transition:.12s}
+.dict-item:hover{background:var(--border)}
+.dict-item .pl{font-weight:700;color:var(--accent);flex:1;min-width:0}
+.dict-item .ru{color:var(--text);flex:1;text-align:right;font-size:.9rem}
+.dict-item .lvl{font-size:.7rem;color:var(--muted);background:var(--card);padding:2px 7px;border-radius:7px;border:1px solid var(--border);font-weight:600}
+
+/* DONE */
+.done-state{text-align:center;padding:26px 10px}
+.done-state .big{font-size:2.8rem;margin-bottom:6px}
+.done-state p{margin:5px 0}
+.done-state .sub{font-size:.88rem;color:var(--muted)}
+
+/* SETTINGS */
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:99}
+.settings-overlay.open{opacity:1;pointer-events:auto}
+.settings-panel{position:fixed;top:0;right:0;width:420px;max-width:100%;height:100%;background:var(--card);box-shadow:-4px 0 24px rgba(0,0,0,.15);transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);z-index:100;overflow-y:auto;padding:20px}
+.settings-panel.open{transform:translateX(0)}
+.settings-panel h2{font-size:1.15rem;margin:0 0 16px}
+.settings-section{margin-bottom:18px}
+.settings-section h3{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 8px;font-weight:700}
+.segmented{display:flex;gap:4px;padding:3px;background:var(--card-2);border-radius:10px;border:1px solid var(--border)}
+.segmented button{flex:1;background:transparent;border:none;padding:9px 6px;border-radius:8px;font-size:.85rem;cursor:pointer;font-family:inherit;color:var(--text);font-weight:600;transition:.15s}
+.segmented button.active{background:var(--card);box-shadow:0 1px 4px rgba(0,0,0,.1);color:var(--accent)}
+.settings-section .btn{width:100%;justify-content:center;margin:4px 0}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:11px 18px;border-radius:12px;background:var(--text);color:var(--card);font-size:.88rem;font-weight:600;box-shadow:var(--shadow);z-index:200;animation:toastIn .25s ease;max-width:90%;text-align:center}
+.toast.ok{background:var(--green);color:#fff}
+.toast.error{background:var(--accent);color:#fff}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* FOOTER */
+.footer-note{font-size:.76rem;color:var(--muted);text-align:center;margin-top:22px;line-height:1.7}
+.footer-note kbd{background:var(--card);border:1px solid var(--border);border-bottom-width:2px;border-radius:5px;padding:1px 5px;font-family:inherit;font-size:.7rem;color:var(--text)}
+.reset-link{background:none;border:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.76rem;font-family:inherit;margin-top:6px}
+
+/* VOICE WARNING */
+.voice-warn{background:#fef3c7;color:#92400e;padding:8px 12px;border-radius:10px;font-size:.82rem;margin-bottom:10px;text-align:center;border:1px solid #fde68a}
+[data-theme="dark"] .voice-warn{background:#78350f;color:#fed7aa;border-color:#92400e}
+
+@media(max-width:560px){
+  .options,.gender-options{grid-template-columns:1fr}
+  .gender-options{grid-template-columns:repeat(3,1fr)}
+  .grade-row{grid-template-columns:1fr 1fr}
+  .app{padding:12px 9px 40px}
+  .panel{padding:11px}
+  .matching-wrap{gap:5px}
+  .match-item{font-size:.85rem;padding:10px 5px}
+  .dict-item .ru{text-align:right}
+  .header-stats{font-size:.76rem}
+  .settings-panel{width:100%}
+}
+@media(max-width:400px){
+  .dict-item{flex-wrap:wrap}
+  .dict-item .ru{text-align:left;flex-basis:100%}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🇵🇱 Polski <span>Trener</span></h1>
+  <div class="header-badges">
+    <div class="badge" id="goalBadge" title="Дневная цель">🎯 <b id="goalCount">0</b>/<span id="goalTarget">10</span></div>
+    <div class="badge streak" id="streakBadge" title="Дней подряд">🔥 <b id="streakCount">0</b></div>
+    <button class="icon-btn" id="settingsBtn" title="Настройки" aria-label="Настройки">⚙️</button>
+  </div>
+  <div class="header-stats">
+    <span>Изучено <b id="statKnown">0</b></span>
+    <span>В процессе <b id="statLearning">0</b></span>
+    <span>Всего <b id="statTotal">0</b></span>
+  </div>
+</header>
+
+<div class="panel">
+  <div class="label">Тема</div>
+  <div class="chips" id="topicChips"></div>
+  <div class="label" style="margin-top:12px">Задание</div>
+  <div id="modeChips"></div>
+</div>
+
+<div class="panel">
+  <div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-text"><span id="progressLabel">Прогресс темы</span><span id="progressPct">0%</span></div>
+  <div class="session-bar">
+    <span>✅ <b class="ok" id="sessCorrect">0</b></span>
+    <span>❌ <b class="bad" id="sessWrong">0</b></span>
+    <span>🔥 <b class="streak" id="sessStreak">0</b></span>
+  </div>
+  <div id="contentArea"></div>
+</div>
+
+<div class="footer-note">
+  Прогресс сохраняется в браузере · Озвучка — Web Speech API<br>
+  <kbd>Пробел</kbd> перевернуть/прослушать · <kbd>1–4</kbd> оценка · <kbd>Enter</kbd> далее · <kbd>Alt+буква</kbd> диакритика
+</div>
+
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel" aria-label="Настройки">
+  <h2>⚙️ Настройки</h2>
+  <div class="settings-section">
+    <h3>Тема оформления</h3>
+    <div class="segmented" data-setting="theme">
+      <button data-val="light">☀️ Светлая</button>
+      <button data-val="dark">🌙 Тёмная</button>
+      <button data-val="auto">🌓 Авто</button>
+    </div>
+  </div>
+  <div class="settings-section">
+    <h3>Размер шрифта</h3>
+    <div class="segmented" data-setting="font">
+      <button data-val="s">Мелкий</button>
+      <button data-val="m">Средний</button>
+      <button data-val="l">Крупный</button>
+    </div>
+  </div>
+  <div class="settings-section">
+    <h3>Дневная цель</h3>
+    <div class="segmented" data-setting="goal">
+      <button data-val="10">10 слов</button>
+      <button data-val="20">20 слов</button>
+      <button data-val="50">50 слов</button>
+    </div>
+  </div>
+  <div class="settings-section">
+    <h3>Звуки</h3>
+    <div class="segmented" data-setting="sound">
+      <button data-val="on">🔔 Вкл</button>
+      <button data-val="off">🔕 Выкл</button>
+    </div>
+  </div>
+  <div class="settings-section">
+    <h3>Данные</h3>
+    <button class="btn" id="exportBtn">📥 Экспорт прогресса</button>
+    <button class="btn" id="importBtn">📤 Импорт прогресса</button>
+    <input type="file" id="importInput" accept="application/json" hidden>
+    <button class="btn btn-danger" id="resetBtn">🗑️ Сбросить весь прогресс</button>
+  </div>
+  <div class="settings-section">
+    <h3>О приложении</h3>
+    <p style="font-size:.8rem;color:var(--muted);margin:0;line-height:1.6">
+      Polski Trener · 14 тем · ~370 слов · 12 режимов<br>
+      SRS-повторение по системе Лейтнера<br>
+      Данные хранятся только в этом браузере
+    </p>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   ДАННЫЕ
+   ============================================================ */
+const DATA = {
+body:{name:"Части тела",icon:"🫀",words:[
+{id:"b01",pl:"głowa",ru:"голова",g:"f",ex:"Moja głowa boli.",exRu:"У меня болит голова."},
+{id:"b02",pl:"oko",ru:"глаз",g:"n",ex:"Moje oko jest niebieskie.",exRu:"Мой глаз голубой."},
+{id:"b03",pl:"oczy",ru:"глаза",g:"n",ex:"Jej oczy są piękne.",exRu:"Её глаза красивые."},
+{id:"b04",pl:"ucho",ru:"ухо",g:"n",ex:"Moje ucho jest małe.",exRu:"Моё ухо маленькое."},
+{id:"b05",pl:"nos",ru:"нос",g:"m",ex:"Mój nos jest duży.",exRu:"Мой нос большой."},
+{id:"b06",pl:"usta",ru:"рот, губы",g:"n",ex:"Jej usta są czerwone.",exRu:"Её губы красные."},
+{id:"b07",pl:"ząb",ru:"зуб",g:"m",ex:"Ten ząb boli.",exRu:"Этот зуб болит."},
+{id:"b08",pl:"język",ru:"язык",g:"m",ex:"Mój język jest długi.",exRu:"Мой язык длинный."},
+{id:"b09",pl:"szyja",ru:"шея",g:"f",ex:"Moja szyja jest długa.",exRu:"Моя шея длинная."},
+{id:"b10",pl:"gardło",ru:"горло",g:"n",ex:"Moje gardło boli.",exRu:"У меня болит горло."},
+{id:"b11",pl:"ramię",ru:"плечо",g:"n",ex:"Moje ramię boli.",exRu:"У меня болит плечо."},
+{id:"b12",pl:"ręka",ru:"рука (кисть)",g:"f",ex:"Moja ręka jest zmęczona.",exRu:"Моя рука устала."},
+{id:"b13",pl:"dłoń",ru:"ладонь",g:"f",ex:"Moja dłoń jest czysta.",exRu:"Моя ладонь чистая."},
+{id:"b14",pl:"palec",ru:"палец",g:"m",ex:"Ten palec jest krótki.",exRu:"Этот палец короткий."},
+{id:"b15",pl:"łokieć",ru:"локоть",g:"m",ex:"Mój łokieć boli.",exRu:"Мой локоть болит."},
+{id:"b16",pl:"pierś",ru:"грудь",g:"f",ex:"Moja pierś boli.",exRu:"У меня болит грудь."},
+{id:"b17",pl:"brzuch",ru:"живот",g:"m",ex:"Mój brzuch jest pełny.",exRu:"Мой живот полный."},
+{id:"b18",pl:"plecy",ru:"спина",g:"n",ex:"Moje plecy bolą.",exRu:"У меня болит спина."},
+{id:"b19",pl:"noga",ru:"нога",g:"f",ex:"Moja noga jest długa.",exRu:"Моя нога длинная."},
+{id:"b20",pl:"kolano",ru:"колено",g:"n",ex:"Moje kolano boli.",exRu:"У меня болит колено."},
+{id:"b21",pl:"stopa",ru:"ступня",g:"f",ex:"Moja stopa jest mała.",exRu:"Моя ступня маленькая."},
+{id:"b22",pl:"palec u nogi",ru:"палец на ноге",g:"m",ex:"Ten palec u nogi jest mały.",exRu:"Этот палец на ноге маленький."},
+{id:"b23",pl:"serce",ru:"сердце",g:"n",ex:"Moje serce bije szybko.",exRu:"Моё сердце бьётся быстро."},
+{id:"b24",pl:"mózg",ru:"мозг",g:"m",ex:"Mój mózg jest zmęczony.",exRu:"Мой мозг устал."},
+{id:"b25",pl:"skóra",ru:"кожа",g:"f",ex:"Moja skóra jest gładka.",exRu:"Моя кожа гладкая."},
+{id:"b26",pl:"włosy",ru:"волосы",g:"n",ex:"Moje włosy są długie.",exRu:"Мои волосы длинные."},
+{id:"b27",pl:"kość",ru:"кость",g:"f",ex:"Ta kość jest twarda.",exRu:"Эта кость твёрдая."},
+{id:"b28",pl:"krew",ru:"кровь",g:"f",ex:"Krew jest czerwona.",exRu:"Кровь красная."},
+{id:"b29",pl:"biodro",ru:"бедро",g:"n",ex:"Moje biodro boli.",exRu:"У меня болит бедро."},
+{id:"b30",pl:"łydka",ru:"икра (ноги)",g:"f",ex:"Moja łydka boli.",exRu:"У меня болит икра."}
+]},
+home:{name:"Быт",icon:"🏠",words:[
+{id:"h01",pl:"dom",ru:"дом",g:"m",ex:"Mój dom jest duży.",exRu:"Мой дом большой."},
+{id:"h02",pl:"mieszkanie",ru:"квартира",g:"n",ex:"Moje mieszkanie jest małe.",exRu:"Моя квартира маленькая."},
+{id:"h03",pl:"pokój",ru:"комната",g:"m",ex:"Ten pokój jest jasny.",exRu:"Эта комната светлая."},
+{id:"h04",pl:"kuchnia",ru:"кухня",g:"f",ex:"Kuchnia jest czysta.",exRu:"Кухня чистая."},
+{id:"h05",pl:"łazienka",ru:"ванная",g:"f",ex:"Łazienka jest mała.",exRu:"Ванная маленькая."},
+{id:"h06",pl:"sypialnia",ru:"спальня",g:"f",ex:"Sypialnia jest cicha.",exRu:"Спальня тихая."},
+{id:"h07",pl:"salon",ru:"гостиная",g:"m",ex:"Salon jest duży.",exRu:"Гостиная большая."},
+{id:"h08",pl:"meble",ru:"мебель",g:"n",ex:"Meble są nowe.",exRu:"Мебель новая."},
+{id:"h09",pl:"stół",ru:"стол",g:"m",ex:"Stół jest drewniany.",exRu:"Стол деревянный."},
+{id:"h10",pl:"krzesło",ru:"стул",g:"n",ex:"Krzesło jest wygodne.",exRu:"Стул удобный."},
+{id:"h11",pl:"łóżko",ru:"кровать",g:"n",ex:"Łóżko jest miękkie.",exRu:"Кровать мягкая."},
+{id:"h12",pl:"szafa",ru:"шкаф",g:"f",ex:"Szafa jest duża.",exRu:"Шкаф большой."},
+{id:"h13",pl:"sofa",ru:"диван",g:"f",ex:"Sofa jest miękka.",exRu:"Диван мягкий."},
+{id:"h14",pl:"lodówka",ru:"холодильник",g:"f",ex:"Lodówka jest pełna.",exRu:"Холодильник полный."},
+{id:"h15",pl:"pralka",ru:"стиральная машина",g:"f",ex:"Pralka jest nowa.",exRu:"Стиральная машина новая."},
+{id:"h16",pl:"odkurzacz",ru:"пылесос",g:"m",ex:"Odkurzacz jest głośny.",exRu:"Пылесос громкий."},
+{id:"h17",pl:"żelazko",ru:"утюг",g:"n",ex:"Żelazko jest gorące.",exRu:"Утюг горячий."},
+{id:"h18",pl:"lustro",ru:"зеркало",g:"n",ex:"Lustro jest czyste.",exRu:"Зеркало чистое."},
+{id:"h19",pl:"okno",ru:"окно",g:"n",ex:"Okno jest otwarte.",exRu:"Окно открыто."},
+{id:"h20",pl:"drzwi",ru:"дверь",g:"n",ex:"Drzwi są zamknięte.",exRu:"Дверь закрыта."},
+{id:"h21",pl:"podłoga",ru:"пол",g:"f",ex:"Podłoga jest brudna.",exRu:"Пол грязный."},
+{id:"h22",pl:"sufit",ru:"потолок",g:"m",ex:"Sufit jest biały.",exRu:"Потолок белый."},
+{id:"h23",pl:"lampa",ru:"лампа",g:"f",ex:"Lampa jest włączona.",exRu:"Лампа включена."},
+{id:"h24",pl:"klucz",ru:"ключ",g:"m",ex:"Klucz jest na stole.",exRu:"Ключ на столе."},
+{id:"h25",pl:"ręcznik",ru:"полотенце",g:"m",ex:"Ręcznik jest mokry.",exRu:"Полотенце мокрое."},
+{id:"h26",pl:"mydło",ru:"мыло",g:"n",ex:"Mydło pachnie ładnie.",exRu:"Мыло приятно пахнет."},
+{id:"h27",pl:"szczoteczka",ru:"щётка",g:"f",ex:"Szczoteczka jest niebieska.",exRu:"Щётка голубая."},
+{id:"h28",pl:"pasta do zębów",ru:"зубная паста",g:"f",ex:"Pasta do zębów jest nowa.",exRu:"Зубная паста новая."},
+{id:"h29",pl:"śmieci",ru:"мусор",g:"n",ex:"Śmieci są w koszu.",exRu:"Мусор в корзине."},
+{id:"h30",pl:"sprzątać",ru:"убирать",g:"—",ex:"Lubię sprzątać.",exRu:"Я люблю убирать."}
+]},
+dishes:{name:"Посуда",icon:"🍽️",words:[
+{id:"d01",pl:"talerz",ru:"тарелка",g:"m",ex:"Talerz jest czysty.",exRu:"Тарелка чистая."},
+{id:"d02",pl:"miska",ru:"миска",g:"f",ex:"Miska jest pełna.",exRu:"Миска полная."},
+{id:"d03",pl:"kubek",ru:"кружка",g:"m",ex:"Kubek jest gorący.",exRu:"Кружка горячая."},
+{id:"d04",pl:"szklanka",ru:"стакан",g:"f",ex:"Szklanka jest pusta.",exRu:"Стакан пустой."},
+{id:"d05",pl:"filiżanka",ru:"чашка",g:"f",ex:"Filiżanka jest mała.",exRu:"Чашка маленькая."},
+{id:"d06",pl:"widelec",ru:"вилка",g:"m",ex:"Widelec jest metalowy.",exRu:"Вилка металлическая."},
+{id:"d07",pl:"nóż",ru:"нож",g:"m",ex:"Nóż jest ostry.",exRu:"Нож острый."},
+{id:"d08",pl:"łyżka",ru:"ложка",g:"f",ex:"Łyżka jest srebrna.",exRu:"Ложка серебряная."},
+{id:"d09",pl:"łyżeczka",ru:"чайная ложка",g:"f",ex:"Łyżeczka jest mała.",exRu:"Чайная ложка маленькая."},
+{id:"d10",pl:"garnek",ru:"кастрюля",g:"m",ex:"Garnek jest duży.",exRu:"Кастрюля большая."},
+{id:"d11",pl:"patelnia",ru:"сковорода",g:"f",ex:"Patelnia jest gorąca.",exRu:"Сковорода горячая."},
+{id:"d12",pl:"czajnik",ru:"чайник",g:"m",ex:"Czajnik jest czerwony.",exRu:"Чайник красный."},
+{id:"d13",pl:"dzbanek",ru:"кувшин",g:"m",ex:"Dzbanek jest pełny.",exRu:"Кувшин полный."},
+{id:"d14",pl:"sztućce",ru:"столовые приборы",g:"n",ex:"Sztućce są czyste.",exRu:"Столовые приборы чистые."},
+{id:"d15",pl:"serwetka",ru:"салфетка",g:"f",ex:"Serwetka jest biała.",exRu:"Салфетка белая."},
+{id:"d16",pl:"taca",ru:"поднос",g:"f",ex:"Taca jest drewniana.",exRu:"Поднос деревянный."},
+{id:"d17",pl:"deska do krojenia",ru:"разделочная доска",g:"f",ex:"Deska do krojenia jest duża.",exRu:"Разделочная доска большая."},
+{id:"d18",pl:"otwieracz",ru:"открывашка",g:"m",ex:"Otwieracz jest w szufladzie.",exRu:"Открывашка в ящике."},
+{id:"d19",pl:"korkociąg",ru:"штопор",g:"m",ex:"Korkociąg jest potrzebny.",exRu:"Штопор нужен."},
+{id:"d20",pl:"chochla",ru:"половник",g:"f",ex:"Chochla jest metalowa.",exRu:"Половник металлический."},
+{id:"d21",pl:"łopatka",ru:"лопатка",g:"f",ex:"Łopatka jest drewniana.",exRu:"Лопатка деревянная."},
+{id:"d22",pl:"trzepaczka",ru:"венчик",g:"f",ex:"Trzepaczka jest w kuchni.",exRu:"Венчик на кухне."},
+{id:"d23",pl:"durszlak",ru:"дуршлаг",g:"m",ex:"Durszlak jest w szafie.",exRu:"Дуршлаг в шкафу."},
+{id:"d24",pl:"rondel",ru:"сотейник",g:"m",ex:"Rondel jest mały.",exRu:"Сотейник маленький."},
+{id:"d25",pl:"forma do pieczenia",ru:"форма для выпечки",g:"f",ex:"Forma do pieczenia jest okrągła.",exRu:"Форма для выпечки круглая."},
+{id:"d26",pl:"zmywarka",ru:"посудомоечная машина",g:"f",ex:"Zmywarka jest pełna.",exRu:"Посудомоечная машина полная."},
+{id:"d27",pl:"zlew",ru:"раковина",g:"m",ex:"Zlew jest brudny.",exRu:"Раковина грязная."},
+{id:"d28",pl:"słoik",ru:"банка",g:"m",ex:"Słoik jest pełny.",exRu:"Банка полная."},
+{id:"d29",pl:"termos",ru:"термос",g:"m",ex:"Termos jest szczelny.",exRu:"Термос герметичный."},
+{id:"d30",pl:"sernik",ru:"сырник",g:"m",ex:"Sernik jest słodki.",exRu:"Сырник сладкий."}
+]},
+food:{name:"Еда и напитки",icon:"🍎",words:[
+{id:"f01",pl:"chleb",ru:"хлеб",g:"m",ex:"Kupuję chleb.",exRu:"Покупаю хлеб."},
+{id:"f02",pl:"mleko",ru:"молоко",g:"n",ex:"Piję mleko.",exRu:"Пью молоко."},
+{id:"f03",pl:"woda",ru:"вода",g:"f"},
+{id:"f04",pl:"herbata",ru:"чай",g:"f"},
+{id:"f05",pl:"kawa",ru:"кофе",g:"f"},
+{id:"f06",pl:"sok",ru:"сок",g:"m"},
+{id:"f07",pl:"piwo",ru:"пиво",g:"n"},
+{id:"f08",pl:"wino",ru:"вино",g:"n"},
+{id:"f09",pl:"ser",ru:"сыр",g:"m"},
+{id:"f10",pl:"masło",ru:"масло",g:"n"},
+{id:"f11",pl:"jajko",ru:"яйцо",g:"n"},
+{id:"f12",pl:"mięso",ru:"мясо",g:"n"},
+{id:"f13",pl:"ryba",ru:"рыба",g:"f"},
+{id:"f14",pl:"kurczak",ru:"курица",g:"m"},
+{id:"f15",pl:"ziemniak",ru:"картофель",g:"m"},
+{id:"f16",pl:"pomidor",ru:"помидор",g:"m"},
+{id:"f17",pl:"ogórek",ru:"огурец",g:"m"},
+{id:"f18",pl:"marchew",ru:"морковь",g:"f"},
+{id:"f19",pl:"cebula",ru:"лук",g:"f"},
+{id:"f20",pl:"czosnek",ru:"чеснок",g:"m"},
+{id:"f21",pl:"jabłko",ru:"яблоко",g:"n"},
+{id:"f22",pl:"banan",ru:"банан",g:"m"},
+{id:"f23",pl:"pomarańcza",ru:"апельсин",g:"f"},
+{id:"f24",pl:"cytryna",ru:"лимон",g:"f"},
+{id:"f25",pl:"cukier",ru:"сахар",g:"m"},
+{id:"f26",pl:"sól",ru:"соль",g:"f"},
+{id:"f27",pl:"pieprz",ru:"перец",g:"m"},
+{id:"f28",pl:"zupa",ru:"суп",g:"f"},
+{id:"f29",pl:"kanapka",ru:"бутерброд",g:"f"},
+{id:"f30",pl:"ciasto",ru:"пирог, торт",g:"n"}
+]},
+clothes:{name:"Одежда",icon:"👕",words:[
+{id:"c01",pl:"koszula",ru:"рубашка",g:"f"},
+{id:"c02",pl:"koszulka",ru:"футболка",g:"f"},
+{id:"c03",pl:"spodnie",ru:"брюки",g:"n"},
+{id:"c04",pl:"dżinsy",ru:"джинсы",g:"n"},
+{id:"c05",pl:"spódnica",ru:"юбка",g:"f"},
+{id:"c06",pl:"sukienka",ru:"платье",g:"f"},
+{id:"c07",pl:"sweter",ru:"свитер",g:"m"},
+{id:"c08",pl:"kurtka",ru:"куртка",g:"f"},
+{id:"c09",pl:"płaszcz",ru:"пальто",g:"m"},
+{id:"c10",pl:"marynarka",ru:"пиджак",g:"f"},
+{id:"c11",pl:"garnitur",ru:"костюм",g:"m"},
+{id:"c12",pl:"skarpetki",ru:"носки",g:"n"},
+{id:"c13",pl:"buty",ru:"обувь",g:"n"},
+{id:"c14",pl:"kozaki",ru:"сапоги",g:"m"},
+{id:"c15",pl:"sandały",ru:"сандалии",g:"m"},
+{id:"c16",pl:"czapka",ru:"шапка",g:"f"},
+{id:"c17",pl:"kapelusz",ru:"шляпа",g:"m"},
+{id:"c18",pl:"szalik",ru:"шарф",g:"m"},
+{id:"c19",pl:"rękawiczki",ru:"перчатки",g:"f"},
+{id:"c20",pl:"pasek",ru:"ремень",g:"m"},
+{id:"c21",pl:"krawat",ru:"галстук",g:"m"},
+{id:"c22",pl:"bluza",ru:"кофта",g:"f"},
+{id:"c23",pl:"piżama",ru:"пижама",g:"f"},
+{id:"c24",pl:"strój kąpielowy",ru:"купальник",g:"m"},
+{id:"c25",pl:"biżuteria",ru:"украшения",g:"f"}
+]},
+colors:{name:"Цвета",icon:"🎨",words:[
+{id:"col01",pl:"biały",ru:"белый",g:"—"},{id:"col02",pl:"czarny",ru:"чёрный",g:"—"},
+{id:"col03",pl:"czerwony",ru:"красный",g:"—"},{id:"col04",pl:"niebieski",ru:"синий",g:"—"},
+{id:"col05",pl:"zielony",ru:"зелёный",g:"—"},{id:"col06",pl:"żółty",ru:"жёлтый",g:"—"},
+{id:"col07",pl:"pomarańczowy",ru:"оранжевый",g:"—"},{id:"col08",pl:"fioletowy",ru:"фиолетовый",g:"—"},
+{id:"col09",pl:"różowy",ru:"розовый",g:"—"},{id:"col10",pl:"brązowy",ru:"коричневый",g:"—"},
+{id:"col11",pl:"szary",ru:"серый",g:"—"},{id:"col12",pl:"złoty",ru:"золотой",g:"—"},
+{id:"col13",pl:"srebrny",ru:"серебряный",g:"—"},{id:"col14",pl:"jasny",ru:"светлый",g:"—"},
+{id:"col15",pl:"ciemny",ru:"тёмный",g:"—"}
+]},
+numbers:{name:"Числа",icon:"🔢",words:[
+{id:"n01",pl:"jeden",ru:"один",g:"—"},{id:"n02",pl:"dwa",ru:"два",g:"—"},
+{id:"n03",pl:"trzy",ru:"три",g:"—"},{id:"n04",pl:"cztery",ru:"четыре",g:"—"},
+{id:"n05",pl:"pięć",ru:"пять",g:"—"},{id:"n06",pl:"sześć",ru:"шесть",g:"—"},
+{id:"n07",pl:"siedem",ru:"семь",g:"—"},{id:"n08",pl:"osiem",ru:"восемь",g:"—"},
+{id:"n09",pl:"dziewięć",ru:"девять",g:"—"},{id:"n10",pl:"dziesięć",ru:"десять",g:"—"},
+{id:"n11",pl:"jedenaście",ru:"одиннадцать",g:"—"},{id:"n12",pl:"dwanaście",ru:"двенадцать",g:"—"},
+{id:"n13",pl:"trzynaście",ru:"тринадцать",g:"—"},{id:"n14",pl:"dwadzieścia",ru:"двадцать",g:"—"},
+{id:"n15",pl:"trzydzieści",ru:"тридцать",g:"—"},{id:"n16",pl:"czterdzieści",ru:"сорок",g:"—"},
+{id:"n17",pl:"pięćdziesiąt",ru:"пятьдесят",g:"—"},{id:"n18",pl:"sto",ru:"сто",g:"—"},
+{id:"n19",pl:"tysiąc",ru:"тысяча",g:"—"},{id:"n20",pl:"milion",ru:"миллион",g:"—"}
+]},
+animals:{name:"Животные",icon:"🐾",words:[
+{id:"a01",pl:"pies",ru:"собака",g:"m"},{id:"a02",pl:"kot",ru:"кот",g:"m"},
+{id:"a03",pl:"koń",ru:"лошадь",g:"m"},{id:"a04",pl:"krowa",ru:"корова",g:"f"},
+{id:"a05",pl:"świnia",ru:"свинья",g:"f"},{id:"a06",pl:"owca",ru:"овца",g:"f"},
+{id:"a07",pl:"koza",ru:"коза",g:"f"},{id:"a08",pl:"kura",ru:"курица",g:"f"},
+{id:"a09",pl:"kogut",ru:"петух",g:"m"},{id:"a10",pl:"kaczka",ru:"утка",g:"f"},
+{id:"a11",pl:"mysz",ru:"мышь",g:"f"},{id:"a12",pl:"szczur",ru:"крыса",g:"m"},
+{id:"a13",pl:"królik",ru:"кролик",g:"m"},{id:"a14",pl:"lis",ru:"лиса",g:"m"},
+{id:"a15",pl:"wilk",ru:"волк",g:"m"},{id:"a16",pl:"niedźwiedź",ru:"медведь",g:"m"},
+{id:"a17",pl:"jeleń",ru:"олень",g:"m"},{id:"a18",pl:"zając",ru:"заяц",g:"m"},
+{id:"a19",pl:"wiewiórka",ru:"белка",g:"f"},{id:"a20",pl:"ptak",ru:"птица",g:"m"},
+{id:"a21",pl:"motyl",ru:"бабочка",g:"m"},{id:"a22",pl:"pszczoła",ru:"пчела",g:"f"},
+{id:"a23",pl:"mucha",ru:"муха",g:"f"},{id:"a24",pl:"pająk",ru:"паук",g:"m"},
+{id:"a25",pl:"żaba",ru:"лягушка",g:"f"}
+]},
+family:{name:"Семья",icon:"👨‍👩‍👧",words:[
+{id:"fam01",pl:"matka",ru:"мать",g:"f"},{id:"fam02",pl:"ojciec",ru:"отец",g:"m"},
+{id:"fam03",pl:"mama",ru:"мама",g:"f"},{id:"fam04",pl:"tata",ru:"папа",g:"m"},
+{id:"fam05",pl:"rodzice",ru:"родители",g:"—"},{id:"fam06",pl:"syn",ru:"сын",g:"m"},
+{id:"fam07",pl:"córka",ru:"дочь",g:"f"},{id:"fam08",pl:"brat",ru:"брат",g:"m"},
+{id:"fam09",pl:"siostra",ru:"сестра",g:"f"},{id:"fam10",pl:"dziadek",ru:"дедушка",g:"m"},
+{id:"fam11",pl:"babcia",ru:"бабушка",g:"f"},{id:"fam12",pl:"wnuk",ru:"внук",g:"m"},
+{id:"fam13",pl:"wnuczka",ru:"внучка",g:"f"},{id:"fam14",pl:"wujek",ru:"дядя",g:"m"},
+{id:"fam15",pl:"ciocia",ru:"тётя",g:"f"},{id:"fam16",pl:"kuzyn",ru:"двоюродный брат",g:"m"},
+{id:"fam17",pl:"kuzynka",ru:"двоюродная сестра",g:"f"},{id:"fam18",pl:"mąż",ru:"муж",g:"m"},
+{id:"fam19",pl:"żona",ru:"жена",g:"f"},{id:"fam20",pl:"dziecko",ru:"ребёнок",g:"n"}
+]},
+weather:{name:"Погода",icon:"☀️",words:[
+{id:"w01",pl:"słońce",ru:"солнце",g:"n"},{id:"w02",pl:"deszcz",ru:"дождь",g:"m"},
+{id:"w03",pl:"śnieg",ru:"снег",g:"m"},{id:"w04",pl:"wiatr",ru:"ветер",g:"m"},
+{id:"w05",pl:"chmura",ru:"облако",g:"f"},{id:"w06",pl:"burza",ru:"гроза",g:"f"},
+{id:"w07",pl:"mgła",ru:"туман",g:"f"},{id:"w08",pl:"tęcza",ru:"радуга",g:"f"},
+{id:"w09",pl:"ciepło",ru:"тепло",g:"—"},{id:"w10",pl:"zimno",ru:"холодно",g:"—"},
+{id:"w11",pl:"gorąco",ru:"жарко",g:"—"},{id:"w12",pl:"mróz",ru:"мороз",g:"m"},
+{id:"w13",pl:"upał",ru:"жара",g:"m"},{id:"w14",pl:"lato",ru:"лето",g:"n"},
+{id:"w15",pl:"zima",ru:"зима",g:"f"},{id:"w16",pl:"wiosna",ru:"весна",g:"f"},
+{id:"w17",pl:"jesień",ru:"осень",g:"f"},{id:"w18",pl:"pogoda",ru:"погода",g:"f"},
+{id:"w19",pl:"temperatura",ru:"температура",g:"f"},{id:"w20",pl:"niebo",ru:"небо",g:"n"}
+]},
+transport:{name:"Транспорт",icon:"🚗",words:[
+{id:"t01",pl:"samochód",ru:"автомобиль",g:"m"},{id:"t02",pl:"autobus",ru:"автобус",g:"m"},
+{id:"t03",pl:"tramwaj",ru:"трамвай",g:"m"},{id:"t04",pl:"pociąg",ru:"поезд",g:"m"},
+{id:"t05",pl:"samolot",ru:"самолёт",g:"m"},{id:"t06",pl:"statek",ru:"корабль",g:"m"},
+{id:"t07",pl:"rower",ru:"велосипед",g:"m"},{id:"t08",pl:"motocykl",ru:"мотоцикл",g:"m"},
+{id:"t09",pl:"taksówka",ru:"такси",g:"f"},{id:"t10",pl:"metro",ru:"метро",g:"n"},
+{id:"t11",pl:"stacja",ru:"станция",g:"f"},{id:"t12",pl:"dworzec",ru:"вокзал",g:"m"},
+{id:"t13",pl:"lotnisko",ru:"аэропорт",g:"n"},{id:"t14",pl:"przystanek",ru:"остановка",g:"m"},
+{id:"t15",pl:"bilet",ru:"билет",g:"m"},{id:"t16",pl:"droga",ru:"дорога",g:"f"},
+{id:"t17",pl:"ulica",ru:"улица",g:"f"},{id:"t18",pl:"most",ru:"мост",g:"m"},
+{id:"t19",pl:"kierowca",ru:"водитель",g:"m"},{id:"t20",pl:"pasażer",ru:"пассажир",g:"m"}
+]},
+verbs:{name:"Глаголы",icon:"🏃",words:[
+{id:"v01",pl:"być",ru:"быть",g:"—"},{id:"v02",pl:"mieć",ru:"иметь",g:"—"},
+{id:"v03",pl:"robić",ru:"делать",g:"—"},{id:"v04",pl:"iść",ru:"идти",g:"—"},
+{id:"v05",pl:"jechać",ru:"ехать",g:"—"},{id:"v06",pl:"biegać",ru:"бегать",g:"—"},
+{id:"v07",pl:"czytać",ru:"читать",g:"—"},{id:"v08",pl:"pisać",ru:"писать",g:"—"},
+{id:"v09",pl:"mówić",ru:"говорить",g:"—"},{id:"v10",pl:"słuchać",ru:"слушать",g:"—"},
+{id:"v11",pl:"jeść",ru:"есть",g:"—"},{id:"v12",pl:"pić",ru:"пить",g:"—"},
+{id:"v13",pl:"spać",ru:"спать",g:"—"},{id:"v14",pl:"pracować",ru:"работать",g:"—"},
+{id:"v15",pl:"uczyć się",ru:"учиться",g:"—"},{id:"v16",pl:"bawić się",ru:"играть",g:"—"},
+{id:"v17",pl:"kupować",ru:"покупать",g:"—"},{id:"v18",pl:"sprzedawać",ru:"продавать",g:"—"},
+{id:"v19",pl:"dawać",ru:"давать",g:"—"},{id:"v20",pl:"brać",ru:"брать",g:"—"},
+{id:"v21",pl:"widzieć",ru:"видеть",g:"—"},{id:"v22",pl:"słyszeć",ru:"слышать",g:"—"},
+{id:"v23",pl:"znać",ru:"знать",g:"—"},{id:"v24",pl:"myśleć",ru:"думать",g:"—"},
+{id:"v25",pl:"kochać",ru:"любить",g:"—"},{id:"v26",pl:"lubić",ru:"нравиться",g:"—"},
+{id:"v27",pl:"chcieć",ru:"хотеть",g:"—"},{id:"v28",pl:"móc",ru:"мочь",g:"—"},
+{id:"v29",pl:"musieć",ru:"быть должным",g:"—"},{id:"v30",pl:"rozumieć",ru:"понимать",g:"—"}
+]},
+jobs:{name:"Профессии",icon:"💼",words:[
+{id:"j01",pl:"lekarz",ru:"врач",g:"m"},{id:"j02",pl:"nauczyciel",ru:"учитель",g:"m"},
+{id:"j03",pl:"inżynier",ru:"инженер",g:"m"},{id:"j04",pl:"prawnik",ru:"юрист",g:"m"},
+{id:"j05",pl:"kierowca",ru:"водитель",g:"m"},{id:"j06",pl:"kucharz",ru:"повар",g:"m"},
+{id:"j07",pl:"kelner",ru:"официант",g:"m"},{id:"j08",pl:"sprzedawca",ru:"продавец",g:"m"},
+{id:"j09",pl:"policjant",ru:"полицейский",g:"m"},{id:"j10",pl:"strażak",ru:"пожарный",g:"m"},
+{id:"j11",pl:"żołnierz",ru:"солдат",g:"m"},{id:"j12",pl:"rolnik",ru:"фермер",g:"m"},
+{id:"j13",pl:"mechanik",ru:"механик",g:"m"},{id:"j14",pl:"programista",ru:"программист",g:"m"},
+{id:"j15",pl:"dziennikarz",ru:"журналист",g:"m"},{id:"j16",pl:"artysta",ru:"художник",g:"m"},
+{id:"j17",pl:"muzyk",ru:"музыкант",g:"m"},{id:"j18",pl:"aktor",ru:"актёр",g:"m"},
+{id:"j19",pl:"pisarz",ru:"писатель",g:"m"},{id:"j20",pl:"pielęgniarka",ru:"медсестра",g:"f"}
+]},
+time:{name:"Время",icon:"📅",words:[
+{id:"ti01",pl:"czas",ru:"время",g:"m"},{id:"ti02",pl:"dzień",ru:"день",g:"m"},
+{id:"ti03",pl:"tydzień",ru:"неделя",g:"m"},{id:"ti04",pl:"miesiąc",ru:"месяц",g:"m"},
+{id:"ti05",pl:"rok",ru:"год",g:"m"},{id:"ti06",pl:"godzina",ru:"час",g:"f"},
+{id:"ti07",pl:"minuta",ru:"минута",g:"f"},{id:"ti08",pl:"sekunda",ru:"секунда",g:"f"},
+{id:"ti09",pl:"rano",ru:"утро",g:"—"},{id:"ti10",pl:"wieczór",ru:"вечер",g:"m"},
+{id:"ti11",pl:"noc",ru:"ночь",g:"f"},{id:"ti12",pl:"południe",ru:"полдень",g:"n"},
+{id:"ti13",pl:"północ",ru:"полночь",g:"f"},{id:"ti14",pl:"poniedziałek",ru:"понедельник",g:"m"},
+{id:"ti15",pl:"wtorek",ru:"вторник",g:"m"},{id:"ti16",pl:"środa",ru:"среда",g:"f"},
+{id:"ti17",pl:"czwartek",ru:"четверг",g:"m"},{id:"ti18",pl:"piątek",ru:"пятница",g:"m"},
+{id:"ti19",pl:"sobota",ru:"суббота",g:"f"},{id:"ti20",pl:"niedziela",ru:"воскресенье",g:"f"}
+]}
+};
+
+const MODES=[
+{id:"flashcards",name:"Карточки",icon:"🃏",group:"Изучение"},
+{id:"quiz_pl_ru",name:"PL → RU",icon:"🇵🇱",group:"Изучение"},
+{id:"quiz_ru_pl",name:"RU → PL",icon:"🇷🇺",group:"Изучение"},
+{id:"listening",name:"Аудио",icon:"🔊",group:"Изучение"},
+{id:"cloze",name:"Пропуск",icon:"📝",group:"Изучение"},
+{id:"typing",name:"Ввод",icon:"⌨️",group:"Практика"},
+{id:"scramble",name:"Буквы",icon:"🔤",group:"Практика"},
+{id:"gender",name:"Род",icon:"⚥",group:"Практика"},
+{id:"matching",name:"Пары",icon:"🔗",group:"Практика"},
+{id:"exam",name:"Экзамен",icon:"🎓",group:"Проверка"},
+{id:"dictionary",name:"Словарь",icon:"📖",group:"Инструменты"},
+{id:"dashboard",name:"Дашборд",icon:"📊",group:"Инструменты"}
+];
+const DIACRITICS=["ą","ć","ę","ł","ń","ó","ś","ź","ż"];
+const DIACRITIC_KEYS={a:"ą",c:"ć",e:"ę",l:"ł",n:"ń",o:"ó",s:"ś",z:"ż",x:"ź"};
+
+/* ============================================================
+   СОСТОЯНИЕ
+   ============================================================ */
+const STORAGE_KEY="pl_trainer_v3";
+const state={
+  topic:"body", mode:"flashcards", progress:{}, session:{},
+  sess:{correct:0,wrong:0,streak:0},
+  settings:{theme:"light",font:"m",goal:10,sound:"on"},
+  streak:{last:"",n:0},
+  daily:{date:"",words:{}},
+  dailyHistory:{}
+};
+
+/* ============================================================
+   СТОРАДЖ
+   ============================================================ */
+function loadState(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const s=JSON.parse(raw);
+    if(s.progress&&typeof s.progress==="object") state.progress=s.progress;
+    if(s.settings&&typeof s.settings==="object") Object.assign(state.settings,s.settings);
+    if(s.streak&&typeof s.streak==="object") Object.assign(state.streak,s.streak);
+    if(s.daily&&typeof s.daily==="object") Object.assign(state.daily,s.daily);
+    if(s.dailyHistory&&typeof s.dailyHistory==="object") state.dailyHistory=s.dailyHistory;
+    if(s.topic&&(s.topic==="all"||DATA[s.topic])) state.topic=s.topic;
+    if(s.mode&&MODES.find(m=>m.id===s.mode)) state.mode=s.mode;
+  }catch(e){ console.warn("Storage:",e); }
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify({
+      progress:state.progress, settings:state.settings, streak:state.streak,
+      daily:state.daily, dailyHistory:state.dailyHistory,
+      topic:state.topic, mode:state.mode
+    }));
+  }catch(e){}
+}
+
+/* ============================================================
+   УТИЛИТЫ
+   ============================================================ */
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function norm(s){return String(s).toLowerCase().trim().replace(/ą/g,"a").replace(/ć/g,"c").replace(/ę/g,"e").replace(/ł/g,"l").replace(/ń/g,"n").replace(/ó/g,"o").replace(/ś/g,"s").replace(/ź/g,"z").replace(/ż/g,"z");}
+function genderLabel(g){return(!g||g==="—")?"":({m:"м.р.",f:"ж.р.",n:"ср.р."}[g]||"");}
+function todayKey(){return new Date().toISOString().slice(0,10);}
+function allWords(){return Object.values(DATA).flatMap(t=>t.words);}
+function getWords(topic){return topic==="all"?allWords():(DATA[topic]?DATA[topic].words:[]);}
+function getWordById(id){for(const t of Object.values(DATA)){const w=t.words.find(x=>x.id===id);if(w)return w;}return null;}
+
+/* ============================================================
+   ЗВУКИ / ОЗВУЧКА
+   ============================================================ */
+let audioCtx=null, hasPolishVoice=false;
+function checkVoice(){
+  if(!("speechSynthesis" in window)) return;
+  const vs=window.speechSynthesis.getVoices();
+  hasPolishVoice=vs.some(v=>v.lang&&v.lang.toLowerCase().startsWith("pl"));
+}
+if("speechSynthesis" in window){
+  checkVoice();
+  window.speechSynthesis.onvoiceschanged=checkVoice;
+}
+function speak(text){
+  if(!("speechSynthesis" in window)) return;
+  try{
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang="pl-PL"; u.rate=0.9;
+    const pl=window.speechSynthesis.getVoices().find(v=>v.lang&&v.lang.toLowerCase().startsWith("pl"));
+    if(pl) u.voice=pl;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+function beep(kind){
+  if(state.settings.sound!=="on") return;
+  try{
+    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==="suspended") audioCtx.resume();
+    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    const t=audioCtx.currentTime;
+    if(kind==="ok"){ o.frequency.setValueAtTime(660,t); o.frequency.setValueAtTime(880,t+.08); }
+    else if(kind==="bad"){ o.frequency.setValueAtTime(220,t); o.frequency.setValueAtTime(165,t+.1); }
+    else { o.frequency.setValueAtTime(440,t); }
+    g.gain.setValueAtTime(.08,t);
+    g.gain.exponentialRampToValueAtTime(.001,t+.2);
+    o.start(t); o.stop(t+.22);
+  }catch(e){}
+}
+
+/* ============================================================
+   SRS
+   ============================================================ */
+const INTERVALS=[0,1,3,7,14,30];
+function getProgress(id){
+  if(!state.progress[id]) state.progress[id]={level:0,nextReview:0,seen:0,correct:0,wrong:0};
+  return state.progress[id];
+}
+function isDue(id){const p=getProgress(id);return !p.nextReview||p.nextReview<=Date.now();}
+function schedule(id,q){
+  const p=getProgress(id); p.seen++;
+  if(q===0){p.level=0;p.wrong++;}
+  else {p.correct++;p.level=Math.min(5,p.level+(q===1?0:q===2?1:2));}
+  p.nextReview=Date.now()+INTERVALS[p.level]*86400000;
+  // daily
+  const tk=todayKey();
+  if(state.daily.date!==tk){state.daily={date:tk,words:{}};}
+  if(!state.daily.words[id]){
+    state.daily.words[id]=true;
+    state.dailyHistory[tk]=(state.dailyHistory[tk]||0)+1;
+  }
+  saveState();
+  renderHeader();
+}
+
+/* ============================================================
+   СЕССИЯ
+   ============================================================ */
+function sessReset(){state.sess={correct:0,wrong:0,streak:0};state.session.mistakes=new Set();renderSession();}
+function sessOk(){state.sess.correct++;state.sess.streak++;renderSession();}
+function sessBad(id){state.sess.wrong++;state.sess.streak=0;if(id)state.session.mistakes.add(id);renderSession();}
+function renderSession(){
+  const c=$("#sessCorrect"),w=$("#sessWrong"),s=$("#sessStreak");
+  if(c)c.textContent=state.sess.correct;
+  if(w)w.textContent=state.sess.wrong;
+  if(s)s.textContent=state.sess.streak;
+}
+
+/* ============================================================
+   СТАТИСТИКА / ШАПКА
+   ============================================================ */
+function renderHeader(){
+  const total=allWords().length;
+  let known=0,learning=0;
+  for(const w of allWords()){
+    const p=state.progress[w.id];
+    if(p&&p.level>=4)known++;
+    else if(p&&p.seen>0)learning++;
+  }
+  $("#statKnown").textContent=known;
+  $("#statLearning").textContent=learning;
+  $("#statTotal").textContent=total;
+
+  // streak
+  const tk=todayKey();
+  if(state.streak.last!==tk){
+    const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+    if(state.streak.last===yesterday)state.streak.n++;
+    else if(state.streak.last==="")state.streak.n=1;
+    else state.streak.n=1;
+    state.streak.last=tk;
+    saveState();
+  }
+  $("#streakCount").textContent=state.streak.n;
+
+  // daily goal
+  const cnt=state.daily.date===tk?Object.keys(state.daily.words).length:0;
+  $("#goalCount").textContent=cnt;
+  $("#goalTarget").textContent=state.settings.goal;
+}
+
+function renderProgress(){
+  const words=getWords(state.topic);
+  const total=words.length;
+  if(!total)return;
+  const studied=words.filter(w=>{const p=state.progress[w.id];return p&&p.seen>0;}).length;
+  const pct=Math.round(studied/total*100);
+  $("#progressFill").style.width=pct+"%";
+  $("#progressPct").textContent=pct+"%";
+  const name=state.topic==="all"?"Все темы":DATA[state.topic].name;
+  $("#progressLabel").textContent=`${name}: изучено ${studied} / ${total}`;
+}
+
+/* ============================================================
+   UI: ЧИПСЫ
+   ============================================================ */
+function renderTopicChips(){
+  $("#topicChips").innerHTML=
+    `<button class="chip ${state.topic==="all"?"active":""}" data-topic="all">🌟 Все темы</button>`+
+    Object.entries(DATA).map(([k,t])=>
+      `<button class="chip ${state.topic===k?"active":""}" data-topic="${k}">${t.icon} ${esc(t.name)}</button>`
+    ).join("");
+}
+function renderModeChips(){
+  const groups=["Изучение","Практика","Проверка","Инструменты"];
+  $("#modeChips").innerHTML=groups.map(g=>{
+    const ms=MODES.filter(m=>m.group===g);
+    return `<div class="group-label">${g}</div><div class="chips">`+
+      ms.map(m=>`<button class="chip mode-chip ${state.mode===m.id?"active":""}" data-mode="${m.id}">${m.icon} ${esc(m.name)}</button>`).join("")+
+      `</div>`;
+  }).join("");
+}
+
+/* ============================================================
+   URL STATE
+   ============================================================ */
+function syncURL(){
+  try{history.replaceState(null,"",`#${state.topic}/${state.mode}`);}catch(e){}
+}
+function readURL(){
+  const hash=location.hash.slice(1);
+  if(!hash)return;
+  const [t,m]=hash.split("/");
+  if(t&&(t==="all"||DATA[t]))state.topic=t;
+  if(m&&MODES.find(x=>x.id===m))state.mode=m;
+}
+
+/* ============================================================
+   КЛАВИАТУРА
+   ============================================================ */
+let keyHandler=null;
+function setKeyHandler(fn){keyHandler=fn;}
+document.addEventListener("keydown",e=>{
+  const tag=document.activeElement&&document.activeElement.tagName;
+  // пропускаем если в input/textarea (кроме escape/enter)
+  if((tag==="INPUT"||tag==="TEXTAREA")){
+    if(keyHandler)keyHandler(e);
+    return;
+  }
+  if(e.altKey&&DIACRITIC_KEYS[e.key.toLowerCase()]){
+    // только для режима typing - проверяется в handler
+    if(keyHandler)keyHandler(e);
+    return;
+  }
+  if(keyHandler)keyHandler(e);
+});
+
+/* ============================================================
+   ТЕМА / ШРИФТ / ЗВУК
+   ============================================================ */
+function applySettings(){
+  const t=state.settings.theme;
+  const theme=t==="auto"?(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):t;
+  document.documentElement.dataset.theme=theme;
+  document.documentElement.dataset.font=state.settings.font;
+}
+window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{
+  if(state.settings.theme==="auto")applySettings();
+});
+
+/* ============================================================
+   НАСТРОЙКИ UI
+   ============================================================ */
+function renderSettings(){
+  $$(".segmented").forEach(seg=>{
+    const key=seg.dataset.setting;
+    const val=state.settings[key==="goal"?"goal":key];
+    seg.querySelectorAll("button").forEach(b=>{
+      b.classList.toggle("active",String(b.dataset.val)===String(val));
+    });
+  });
+}
+function openSettings(){ $("#settingsPanel").classList.add("open"); $("#settingsOverlay").classList.add("open"); renderSettings(); }
+function closeSettings(){ $("#settingsPanel").classList.remove("open"); $("#settingsOverlay").classList.remove("open"); }
+
+function bindSettings(){
+  $("#settingsBtn").addEventListener("click",openSettings);
+  $("#settingsOverlay").addEventListener("click",closeSettings);
+  $$(".segmented").forEach(seg=>{
+    seg.addEventListener("click",e=>{
+      const btn=e.target.closest("button[data-val]");
+      if(!btn)return;
+      const key=seg.dataset.setting;
+      const val=btn.dataset.val;
+      if(key==="goal")state.settings.goal=parseInt(val,10);
+      else state.settings[key]=val;
+      saveState();
+      applySettings();
+      renderSettings();
+      renderHeader();
+    });
+  });
+  $("#exportBtn").addEventListener("click",exportProgress);
+  $("#importBtn").addEventListener("click",()=>$("#importInput").click());
+  $("#importInput").addEventListener("change",e=>{if(e.target.files[0])importProgress(e.target.files[0]);e.target.value="";});
+  $("#resetBtn").addEventListener("click",resetAll);
+}
+function exportProgress(){
+  const data={progress:state.progress,settings:state.settings,streak:state.streak,daily:state.daily,dailyHistory:state.dailyHistory};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`polski-progress-${todayKey()}.json`;
+  a.click();
+  toast("Прогресс скачан","ok");
+}
+function importProgress(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const data=JSON.parse(r.result);
+      if(!data||typeof data!=="object")throw new Error("Неверный формат");
+      if(data.progress)state.progress=data.progress;
+      if(data.settings)Object.assign(state.settings,data.settings);
+      if(data.streak)Object.assign(state.streak,data.streak);
+      if(data.daily)Object.assign(state.daily,data.daily);
+      if(data.dailyHistory)state.dailyHistory=data.dailyHistory;
+      saveState();applySettings();
+      renderHeader();renderProgress();restartMode();
+      toast("Прогресс загружен ✅","ok");
+      closeSettings();
+    }catch(e){ toast("Ошибка: "+e.message,"error"); }
+  };
+  r.readAsText(file);
+}
+function resetAll(){
+  if(!confirm("Сбросить весь прогресс? Это действие нельзя отменить."))return;
+  state.progress={};state.streak={last:"",n:0};state.daily={date:"",words:{}};state.dailyHistory={};
+  saveState();renderHeader();renderProgress();restartMode();
+  toast("Прогресс сброшен","ok");
+  closeSettings();
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function toast(msg,type){
+  const el=document.createElement("div");
+  el.className="toast"+(type?" "+type:"");
+  el.textContent=msg;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),2800);
+}
+
+/* ============================================================
+   ОБЩЕЕ: ВЫБОР ПУЛА
+   ============================================================ */
+function pickPool(topic,mode){
+  let words=getWords(topic);
+  if(mode==="gender")words=words.filter(w=>["m","f","n"].includes(w.g));
+  if(mode==="cloze")words=words.filter(w=>w.ex&&w.pl&&w.ex.toLowerCase().includes(w.pl.toLowerCase()));
+  return words;
+}
+function buildQueue(topic,mode){
+  const pool=pickPool(topic,mode);
+  if(!pool.length)return [];
+  const due=pool.filter(w=>isDue(w.id));
+  const source=due.length?due:pool;
+  return shuffle(source.map(w=>w.id));
+}
+
+/* ============================================================
+   КАРТОЧКИ
+   ============================================================ */
+function modeFlashcards(){
+  state.session={mode:"flashcards",queue:buildQueue(state.topic,"flashcards"),cur:null,flipped:false,mistakes:new Set()};
+  nextFlashcard();
+}
+function nextFlashcard(){
+  const s=state.session;
+  if(!s.queue.length)return doneState("Карточки","Все карточки пройдены. Отличная работа!","flashcards");
+  s.cur=s.queue.shift();s.flipped=false;renderFlashcard();
+}
+function renderFlashcard(){
+  const w=getWordById(state.session.cur);
+  if(!w)return nextFlashcard();
+  const p=getProgress(w.id);
+  $("#contentArea").innerHTML=`
+    <div class="flashcard" id="fc">
+      <div class="flashcard-inner">
+        <div class="flash-face flash-front">
+          <p class="word-pl">${esc(w.pl)}</p>
+          <div class="word-meta">${genderLabel(w.g)} · ур. ${p.level}/5</div>
+          <div class="hint">Нажмите или Пробел, чтобы перевернуть</div>
+        </div>
+        <div class="flash-face flash-back">
+          <p class="word-ru">${esc(w.ru)}</p>
+          ${w.ex?`<div class="word-ex">${esc(w.ex)}</div><div class="word-ex-ru">${esc(w.exRu)}</div>`:``}
+          <div class="hint">Оцените, насколько легко вспомнили</div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin:6px 0">
+      <button class="btn-ghost" id="speakBtn">🔊 Произнести</button>
+      <button class="btn-ghost" id="skipBtn">⏭ Пропустить</button>
+    </div>
+    <div class="grade-row" id="gradeRow" style="display:none">
+      <button class="grade-again" data-q="0">Не помню · 1</button>
+      <button class="grade-hard" data-q="1">Трудно · 2</button>
+      <button class="grade-good" data-q="2">Хорошо · 3</button>
+      <button class="grade-easy" data-q="3">Легко · 4</button>
+    </div>
+  `;
+  const fc=$("#fc"), gr=$("#gradeRow");
+  const flip=()=>{if(state.session.flipped)return;state.session.flipped=true;fc.classList.add("flipped");gr.style.display="grid";};
+  fc.addEventListener("click",flip);
+  $("#speakBtn").addEventListener("click",e=>{e.stopPropagation();speak(w.pl);});
+  $("#skipBtn").addEventListener("click",e=>{e.stopPropagation();state.session.queue.push(w.id);nextFlashcard();});
+  gr.addEventListener("click",e=>{
+    const btn=e.target.closest("button[data-q]");
+    if(!btn)return;
+    const q=parseInt(btn.dataset.q,10);
+    schedule(w.id,q);
+    if(q>=2){sessOk();beep("ok");}else{sessBad(w.id);beep("bad");}
+    renderProgress();
+    nextFlashcard();
+  });
+  setKeyHandler(ev=>{
+    if(ev.target.tagName==="INPUT")return;
+    if(!state.session.flipped&&(ev.key===" "||ev.key==="Enter")){ev.preventDefault();flip();}
+    else if(state.session.flipped&&["1","2","3","4"].includes(ev.key)){
+      ev.preventDefault();
+      const q=parseInt(ev.key,10)-1;
+      schedule(w.id,q);
+      if(q>=2){sessOk();beep("ok");}else{sessBad(w.id);beep("bad");}
+      renderProgress();nextFlashcard();
+    }
+  });
+}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+function modeQuiz(dir){
+  state.session={mode:"quiz",dir,queue:buildQueue(state.topic,"quiz"),cur:null,answered:false,mistakes:new Set()};
+  nextQuiz();
+}
+function nextQuiz(){
+  const s=state.session;
+  if(!s.queue.length)return doneState("Викторина","Сессия завершена.","quiz");
+  s.cur=s.queue.shift();s.answered=false;renderQuiz();
+}
+function renderQuiz(){
+  const s=state.session;
+  const w=getWordById(s.cur);if(!w)return nextQuiz();
+  const plToRu=s.dir==="quiz_pl_ru";
+  let pool=getWords(state.topic).filter(x=>x.id!==w.id);
+  if(pool.length<3)pool=allWords().filter(x=>x.id!==w.id);
+  const opts=shuffle([w,...shuffle(pool).slice(0,3)]);
+  const key=plToRu?"ru":"pl";
+  $("#contentArea").innerHTML=`
+    <div class="quiz-question">
+      <p class="${plToRu?'word-pl':'word-ru'}">${esc(plToRu?w.pl:w.ru)}</p>
+      <div class="word-meta">${plToRu?'Выберите перевод':'Выберите польское слово'}</div>
+      ${plToRu?`<button class="btn-ghost" id="qSpeak" style="margin-top:4px">🔊</button>`:``}
+    </div>
+    <div class="options" id="opts">
+      ${opts.map(o=>`<button class="option" data-id="${o.id}">${esc(o[key])}</button>`).join("")}
+    </div>
+    <div class="feedback-area" id="fb"></div>
+  `;
+  if(plToRu)$("#qSpeak").addEventListener("click",()=>speak(w.pl));
+  $("#opts").addEventListener("click",e=>{
+    const btn=e.target.closest("button[data-id]");
+    if(!btn||s.answered)return;
+    s.answered=true;
+    const ok=btn.dataset.id===w.id;
+    $$("#opts .option").forEach(b=>{
+      b.disabled=true;
+      if(b.dataset.id===w.id)b.classList.add("correct");
+      if(b===btn&&!ok)b.classList.add("wrong");
+    });
+    if(ok){schedule(w.id,2);sessOk();beep("ok");}else{schedule(w.id,0);sessBad(w.id);beep("bad");speak(w.pl);}
+    renderProgress();
+    showFeedback(ok,w,"pl",()=>nextQuiz());
+  });
+  setKeyHandler(ev=>{if(ev.key==="Enter"){const b=$("#fb .btn-primary");if(b){ev.preventDefault();b.click();}}});
+}
+
+function showFeedback(ok,w,speakLang,onNext){
+  $("#fb").innerHTML=`
+    <div class="feedback ${ok?'ok':'bad'}">${ok?"Правильно! ✅":`Правильно: <b>${esc(w.ru)}</b> — <b>${esc(w.pl)}</b>`}</div>
+    <div><button class="btn-primary" id="nextBtn">Далее →</button></div>
+  `;
+  $("#nextBtn").addEventListener("click",onNext);
+  if(speakLang==="pl")speak(w.pl);
+}
+
+/* ============================================================
+   ВВОД
+   ============================================================ */
+function modeTyping(){
+  state.session={mode:"typing",queue:buildQueue(state.topic,"typing"),cur:null,answered:false,mistakes:new Set()};
+  nextTyping();
+}
+function nextTyping(){
+  const s=state.session;
+  if(!s.queue.length)return doneState("Ввод","Все слова введены.","typing");
+  s.cur=s.queue.shift();s.answered=false;renderTyping();
+}
+function renderTyping(){
+  const w=getWordById(state.session.cur);if(!w)return nextTyping();
+  $("#contentArea").innerHTML=`
+    <div class="typing-box">
+      <p class="typing-target">${esc(w.ru)}</p>
+      <div class="typing-hint">${genderLabel(w.g)?genderLabel(w.g)+" · ":""}Напишите по-польски</div>
+      <input class="typing-input" id="tInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="...">
+      <div class="diacritics" id="dia">
+        ${DIACRITICS.map(d=>`<button data-char="${d}" title="Alt+${d==="ź"?"x":"a"}">${d}</button>`).join("")}
+      </div>
+      <div style="margin-top:12px">
+        <button class="btn-blue" id="tCheck">Проверить</button>
+        <button class="btn-ghost" id="tShow">Показать</button>
+      </div>
+      <div class="feedback-area" id="fb"></div>
+    </div>
+  `;
+  const input=$("#tInput");input.focus();
+  $("#dia").addEventListener("click",e=>{
+    const btn=e.target.closest("button[data-char]");if(!btn)return;
+    const ch=btn.dataset.char;
+    const s=input.selectionStart,ePos=input.selectionEnd;
+    input.value=input.value.slice(0,s)+ch+input.value.slice(ePos);
+    input.selectionStart=input.selectionEnd=s+ch.length;
+    input.focus();
+  });
+  const check=()=>{
+    if(state.session.answered)return;
+    state.session.answered=true;
+    const val=input.value.trim();
+    const exact=val.toLowerCase()===w.pl.toLowerCase();
+    const almost=norm(val)===norm(w.pl);
+    input.disabled=true;
+    if(exact||almost){
+      input.classList.add("correct");
+      schedule(w.id,exact?2:1);sessOk();beep("ok");
+      $("#fb").innerHTML=`
+        <div class="feedback ok">Правильно! ✅${almost&&!exact?` Обратите внимание на диакритику: <b>${esc(w.pl)}</b>`:""}</div>
+        <div><button class="btn-primary" id="nextBtn">Далее →</button></div>
+      `;
+    }else{
+      input.classList.add("wrong");
+      schedule(w.id,0);sessBad(w.id);beep("bad");
+      $("#fb").innerHTML=`
+        <div class="feedback bad">Правильно: <b>${esc(w.pl)}</b></div>
+        <div><button class="btn-primary" id="nextBtn">Далее →</button></div>
+      `;
+      speak(w.pl);
+    }
+    renderProgress();
+    $("#nextBtn").addEventListener("click",nextTyping);
+    $("#tCheck").disabled=true;$("#tShow").disabled=true;
+  };
+  $("#tCheck").addEventListener("click",check);
+  input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();check();}});
+  $("#tShow").addEventListener("click",()=>{
+    if(state.session.answered)return;
+    state.session.answered=true;
+    input.value=w.pl;input.classList.add("wrong");input.disabled=true;
+    schedule(w.id,0);sessBad(w.id);beep("bad");
+    $("#fb").innerHTML=`
+      <div class="feedback bad">Ответ: <b>${esc(w.pl)}</b></div>
+      <div><button class="btn-primary" id="nextBtn">Далее →</button></div>
+    `;
+    $("#nextBtn").addEventListener("click",nextTyping);
+    $("#tCheck").disabled=true;$("#tShow").disabled=true;speak(w.pl);
+    renderProgress();
+  });
+  setKeyHandler(ev=>{
+    if(ev.altKey&&DIACRITIC_KEYS[ev.key.toLowerCase()]){
+      ev.preventDefault();
+      const ch=DIACRITIC_KEYS[ev.key.toLowerCase()];
+      const s=input.selectionStart,ePos=input.selectionEnd;
+      input.value=input.value.slice(0,s)+ch+input.value.slice(ePos);
+      input.selectionStart=input.selectionEnd=s+ch.length;
+      input.focus();
+    }
+    if(ev.key==="Enter"&&$("#nextBtn")){ev.preventDefault();$("#nextBtn").click();}
+  });
+}
+
+/* ============================================================
+   БУКВЫ
+   ============================================================ */
+function modeScramble(){
+  let queue=buildQueue(state.topic,"scramble");
+  state.session={mode:"scramble",queue,cur:null,answered:false,placed:[],tiles:[],mistakes:new Set()};
+  nextScramble();
+}
+function nextScramble(){
+  const s=state.session;
+  while(s.queue.length&&getWordById(s.queue[0]).pl.length>18)s.queue.shift();
+  if(!s.queue.length)return doneState("Буквы","Все слова собраны.","scramble");
+  s.cur=s.queue.shift();s.answered=false;
+  const w=getWordById(s.cur);
+  s.tiles=shuffle(Array.from(w.pl).map((c,i)=>({c,idx:i,used:false})));
+  s.placed=[];
+  renderScramble();
+}
+function renderScramble(){
+  const s=state.session;
+  const w=getWordById(s.cur);if(!w)return nextScramble();
+  $("#contentArea").innerHTML=`
+    <div class="scramble-box">
+      <p class="typing-target">${esc(w.ru)}</p>
+      <div class="typing-hint">${genderLabel(w.g)?genderLabel(w.g)+" · ":""}Соберите слово из букв</div>
+      <div class="scramble-built" id="built"></div>
+      <div class="scramble-tiles" id="tiles">
+        ${s.tiles.map((t,i)=>`<button class="letter-tile" data-tile="${i}">${esc(t.c)}</button>`).join("")}
+      </div>
+      <div style="margin-top:12px">
+        <button class="btn-blue" id="sCheck" disabled>Проверить</button>
+        <button class="btn-ghost" id="sClear">Очистить</button>
+      </div>
+      <div class="feedback-area" id="fb"></div>
+    </div>
+  `;
+  renderScrambleState();
+  $("#tiles").addEventListener("click",e=>{
+    const btn=e.target.closest("button[data-tile]");if(!btn||state.session.answered)return;
+    const idx=parseInt(btn.dataset.tile,10);
+    if(state.session.tiles[idx].used)return;
+    state.session.tiles[idx].used=true;
+    state.session.placed.push({c:state.session.tiles[idx].c,tileIdx:idx});
+    renderScrambleState();
+  });
+  $("#built").addEventListener("click",()=>{
+    if(state.session.answered||!state.session.placed.length)return;
+    const r=state.session.placed.pop();
+    state.session.tiles[r.tileIdx].used=false;
+    renderScrambleState();
+  });
+  $("#sClear").addEventListener("click",()=>{
+    if(state.session.answered)return;
+    state.session.tiles.forEach(t=>t.used=false);
+    state.session.placed=[];renderScrambleState();
+  });
+  $("#sCheck").addEventListener("click",()=>{
+    if(state.session.answered)return;
+    state.session.answered=true;
+    const built=state.session.placed.map(p=>p.c).join("");
+    const ok=norm(built)===norm(w.pl);
+    if(ok){schedule(w.id,2);sessOk();beep("ok");$("#built").style.borderColor="var(--green)";}
+    else{schedule(w.id,0);sessBad(w.id);beep("bad");$("#built").style.borderColor="var(--accent-2)";speak(w.pl);}
+    renderProgress();
+    $("#fb").innerHTML=`
+      <div class="feedback ${ok?'ok':'bad'}">${ok?"Правильно! ✅":`Правильно: <b>${esc(w.pl)}</b>`}</div>
+      <div><button class="btn-primary" id="nextBtn">Далее →</button></div>
+    `;
+    $("#nextBtn").addEventListener("click",nextScramble);
+    $("#sCheck").disabled=true;$("#sClear").disabled=true;
+  });
+  setKeyHandler(ev=>{if(ev.key==="Enter"&&$("#nextBtn")){ev.preventDefault();$("#nextBtn").click();}});
+}
+function renderScrambleState(){
+  const s=state.session;
+  const built=$("#built");if(!built)return;
+  built.innerHTML=s.placed.length
+    ?s.placed.map(p=>`<span class="letter-tile placed">${esc(p.c)}</span>`).join("")
+    :`<span style="color:var(--muted);font-size:.88rem">Нажимайте на буквы ниже...</span>`;
+  built.classList.toggle("filled",s.placed.length>0);
+  $$("#tiles .letter-tile").forEach((btn,i)=>{btn.disabled=s.tiles[i].used;});
+  const chk=$("#sCheck");if(chk)chk.disabled=s.placed.length!==s.tiles.length;
+}
+
+/* ============================================================
+   АУДИО
+   ============================================================ */
+function modeListening(){
+  state.session={mode:"listening",queue:buildQueue(state.topic,"listening"),cur:null,answered:false,mistakes:new Set()};
+  nextListening();
+}
+function nextListening(){
+  const s=state.session;
+  if(!s.queue.length)return doneState("Аудио","Все слова прослушаны.","listening");
+  s.cur=s.queue.shift();s.answered=false;renderListening();
+}
+function renderListening(){
+  const s=state.session;
+  const w=getWordById(s.cur);if(!w)return nextListening();
+  let pool=getWords(state.topic).filter(x=>x.id!==w.id);
+  if(pool.length<3)pool=allWords().filter(x=>x.id!==w.id);
+  const opts=shuffle([w,...shuffle(pool).slice(0,3)]);
+  $("#contentArea").innerHTML=`
+    <div class="quiz-question">
+      <div style="font-size:2.5rem">🔊</div>
+      <div class="word-meta">Прослушайте и выберите перевод</div>
+      <button class="btn-ghost" id="lSpeak" style="margin-top:8px">▶ Прослушать</button>
+    </div>
+    <div class="options" id="opts">
+      ${opts.map(o=>`<button class="option" data-id="${o.id}">${esc(o.ru)}</button>`).join("")}
+    </div>
+    <div class="feedback-area" id="fb"></div>
+  `;
+  $("#lSpeak").addEventListener("click",()=>speak(w.pl));
+  setTimeout(()=>speak(w.pl),200);
+  $("#opts").addEventListener("click",e=>{
+    const btn=e.target.closest("button[data-id]");if(!btn||s.answered)return;
+    s.answered=true;
+    const ok=btn.dataset.id===w.id;
+    $$("#opts .option").forEach(b=>{
+      b.disabled=true;
+      if(b.dataset.id===w.id)b.classList.add("correct");
+      if(b===btn&&!ok)b.classList.add("wrong");
+    });
+    if(ok){schedule(w.id,2);sessOk();beep("ok");}else{schedule(w.id,0);sessBad(w.id);beep("bad");}
+    renderProgress();
+    showFeedback(ok,w,"pl",()=>nextListening());
+  });
+  setKeyHandler(ev=>{
+    if(ev.key===" "){ev.preventDefault();speak(w.pl);}
+    if(ev.key==="Enter"&&$("#nextBtn")){ev.preventDefault();$("#nextBtn").click();}
+  });
+}
+
+/* ============================================================
+   РОД
+   ============================================================ */
+function modeGender(){
+  state.session={mode:"gender",queue:buildQueue(state.topic,"gender"),cur:null,answered:false,mistakes:new Set()};
+  nextGender();
+}
+function nextGender(){
+  const s=state.session;
+  if(!s.queue.length)return doneState("Род","Все слова определены.","gender");
+  s.cur=s.queue.shift();s.answered=false;renderGender();
+}
+function renderGender(){
+  const s=state.session;
+  const w=getWordById(s.cur);if(!w)return nextGender();
+  $("#contentArea").innerHTML=`
+    <div class="quiz-question">
+      <p class="word-pl">${esc(w.pl)}</p>
+      <div class="word-meta">${esc(w.ru)}</div>
+      <div class="hint">Какого рода это слово?</div>
+    </div>
+    <div class="gender-options" id="gopts">
+      <button data-g="m">мужской<br><small>męski</small></button>
+      <button data-g="f">женский<br><small>żeński</small></button>
+      <button data-g="n">средний<br><small>nijaki</small></button>
+    </div>
+    <div class="feedback-area" id="fb"></div>
+  `;
+  $("#gopts").addEventListener("click",e=>{
+    const btn=e.target.closest("button[data-g]");if(!btn||s.answered)return;
+    s.answered=true;
+    const ok=btn.dataset.g===w.g;
+    $$("#gopts button").forEach(b=>{
+      b.disabled=true;
+      if(b.dataset.g===w.g)b.classList.add("correct");
+      if(b===btn&&!ok)b.classList.add("wrong");
+    });
+    if(ok){schedule(w.id,2);sessOk();beep("ok");}else{schedule(w.id,0);sessBad(w.id);beep("bad");}
+    renderProgress();
+    $("#fb").innerHTML=`
+      <div class="feedback ${ok?'ok':'bad'}">${ok?"Правильно! ✅":`Правильно: ${genderLabel(w.g)}`}</div>
+      <div><button class="btn-primary" id="nextBtn">Далее →</button></div>
+    `;
+    $("#nextBtn").addEventListener("click",nextGender);
+  });
+  setKeyHandler(ev=>{if(ev.key==="Enter"&&$("#nextBtn")){ev.preventDefault();$("#nextBtn").click();}});
+}
+
+/* ============================================================
+   ПАРЫ
+   ============================================================ */
+function modeMatching(){
+  state.session={mode:"matching",rounds:0,matched:0,pairs:[],selL:null,selR:null,mistakes:new Set()};
+  startMatchingRound();
+}
+function startMatchingRound(){
+  const s=state.session;
+  const pool=pickPool(state.topic,"matching");
+  const due=pool.filter(w=>isDue(w.id));
+  const source=due.length>=5?due:pool;
+  let chosen=shuffle(source.length>=5?source:allWords()).slice(0,5);
+  if(chosen.length<5)return doneState("Пары","Недостаточно слов.","matching");
+  s.pairs=chosen.map(w=>({w}));
+  s.matched=0;s.selL=null;s.selR=null;
+  renderMatching();
+}
+function renderMatching(){
+  const s=state.session;
+  const L=shuffle(s.pairs.map((p,i)=>({idx:i,text:p.w.pl})));
+  const R=shuffle(s.pairs.map((p,i)=>({idx:i,text:p.w.ru})));
+  $("#contentArea").innerHTML=`
+    <div class="matching-header">Соедините пары · ${s.matched}/5 · раунд ${s.rounds+1}</div>
+    <div class="matching-wrap">
+      <div class="match-col" id="colL">${L.map(it=>`<button class="match-item" data-side="L" data-idx="${it.idx}">${esc(it.text)}</button>`).join("")}</div>
+      <div class="match-col" id="colR">${R.map(it=>`<button class="match-item" data-side="R" data-idx="${it.idx}">${esc(it.text)}</button>`).join("")}</div>
+    </div>
+    <div class="feedback-area" id="fb"></div>
+  `;
+  $$(".match-item").forEach(b=>b.addEventListener("click",()=>handleMatchClick(b)));
+}
+function handleMatchClick(btn){
+  const s=state.session;
+  if(btn.classList.contains("matched"))return;
+  const side=btn.dataset.side;
+  if(side==="L"){if(s.selL)s.selL.classList.remove("selected");s.selL=btn;btn.classList.add("selected");}
+  else{if(s.selR)s.selR.classList.remove("selected");s.selR=btn;btn.classList.add("selected");}
+  if(s.selL&&s.selR){
+    const L=s.selL,R=s.selR;
+    const li=parseInt(L.dataset.idx,10),ri=parseInt(R.dataset.idx,10);
+    if(li===ri){
+      L.classList.remove("selected");R.classList.remove("selected");
+      L.classList.add("matched");R.classList.add("matched");
+      L.disabled=true;R.disabled=true;
+      const w=s.pairs[li].w;
+      schedule(w.id,2);sessOk();beep("ok");
+      s.matched++;s.selL=null;s.selR=null;
+      renderProgress();
+      if(s.matched===5){
+        $("#fb").innerHTML=`<div class="feedback ok">Раунд завершён! 🎉</div><div><button class="btn-primary" id="nextBtn">Следующий раунд →</button></div>`;
+        $("#nextBtn").addEventListener("click",()=>{state.session.rounds++;startMatchingRound();});
+      }
+    }else{
+      const w=s.pairs[li].w;
+      schedule(w.id,0);sessBad(w.id);beep("bad");
+      L.classList.add("shake");R.classList.add("shake");
+      setTimeout(()=>{L.classList.remove("shake","selected");R.classList.remove("shake","selected");s.selL=null;s.selR=null;},500);
+    }
+  }
+}
+
+/* ============================================================
+   ПРОПУСК (CLOZE)
+   ============================================================ */
+function modeCloze(){
+  state.session={mode:"cloze",queue:buildQueue(state.topic,"cloze"),cur:null,answered:false,mistakes:new Set()};
+  nextCloze();
+}
+function nextCloze(){
+  const s=state.session;
+  if(!s.queue.length)return doneState("Пропуск","Все предложения пройдены.","cloze");
+  s.cur=s.queue.shift();s.answered=false;renderCloze();
+}
+function renderCloze(){
+  const s=state.session;
+  const w=getWordById(s.cur);if(!w)return nextCloze();
+  // создаём предложение с пропуском
+  const rx=new RegExp("\\b"+w.pl.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","i");
+  const sentence=w.ex.replace(rx,"______");
+  const pool=getWords(state.topic).filter(x=>x.id!==w.id&&x.pl);
+  if(pool.length<3)return nextCloze();
+  const opts=shuffle([w,...shuffle(pool).slice(0,3)]);
+  $("#contentArea").innerHTML=`
+    <div class="quiz-question">
+      <p class="word-ex" style="font-style:normal;font-size:1.05rem;max-width:100%">${esc(sentence)}</p>
+      <div class="word-meta">${esc(w.exRu)}</div>
+      <div class="hint">Какое слово пропущено?</div>
+    </div>
+    <div class="options" id="opts">
+      ${opts.map(o=>`<button class="option" data-id="${o.id}">${esc(o.pl)}</button>`).join("")}
+    </div>
+    <div class="feedback-area" id="fb"></div>
+  `;
+  $("#opts").addEventListener("click",e=>{
+    const btn=e.target.closest("button[data-id]");if(!btn||s.answered)return;
+    s.answered=true;
+    const ok=btn.dataset.id===w.id;
+    $$("#opts .option").forEach(b=>{
+      b.disabled=true;
+      if(b.dataset.id===w.id)b.classList.add("correct");
+      if(b===btn&&!ok)b.classList.add("wrong");
+    });
+    if(ok){schedule(w.id,2);sessOk();beep("ok");}else{schedule(w.id,0);sessBad(w.id);beep("bad");}
+    renderProgress();
+    $("#fb").innerHTML=`
+      <div class="feedback ${ok?'ok':'bad'}">${ok?"Правильно! ✅":`Правильно: <b>${esc(w.pl)}</b>`}</div>
+      <div><button class="btn-primary" id="nextBtn">Далее →</button></div>
+    `;
+    $("#nextBtn").addEventListener("click",nextCloze);
+    speak(w.pl);
+  });
+  setKeyHandler(ev=>{if(ev.key==="Enter"&&$("#nextBtn")){ev.preventDefault();$("#nextBtn").click();}});
+}
+
+/* ============================================================
+   ЭКЗАМЕН
+   ============================================================ */
+function modeExam(){
+  const pool=shuffle(getWords(state.topic));
+  if(pool.length<5)return doneState("Экзамен","Недостаточно слов для экзамена.","exam");
+  const questions=pool.slice(0,Math.min(20,pool.length)).map(w=>({w,answered:false,selected:null}));
+  state.session={mode:"exam",questions,index:0,started:Date.now(),finished:false,mistakes:new Set()};
+  renderExamQuestion();
+}
+function renderExamQuestion(){
+  const s=state.session;
+  if(s.index>=s.questions.length)return renderExamResults();
+  const q=s.questions[s.index];
+  const w=q.w;
+  let pool=getWords(state.topic).filter(x=>x.id!==w.id);
+  if(pool.length<3)pool=allWords().filter(x=>x.id!==w.id);
+  const opts=shuffle([w,...shuffle(pool).slice(0,3)]);
+  const num=s.index+1,total=s.questions.length;
+  $("#contentArea").innerHTML=`
+    <div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);margin-bottom:8px">
+      <span>Вопрос ${num} / ${total}</span>
+      <span>Правильно: ${s.questions.filter(x=>x.answered&&x.selected===x.w.id).length}</span>
+    </div>
+    <div class="progress-wrap" style="margin-bottom:14px"><div class="progress-fill" style="width:${(num-1)/total*100}%"></div></div>
+    <div class="quiz-question">
+      <p class="word-pl">${esc(w.pl)}</p>
+      <div class="word-meta">Выберите перевод</div>
+    </div>
+    <div class="options" id="opts">
+      ${opts.map(o=>`<button class="option" data-id="${o.id}">${esc(o.ru)}</button>`).join("")}
+    </div>
+  `;
+  $("#opts").addEventListener("click",e=>{
+    const btn=e.target.closest("button[data-id]");if(!btn||q.answered)return;
+    q.answered=true;q.selected=btn.dataset.id;
+    const ok=btn.dataset.id===w.id;
+    $$("#opts .option").forEach(b=>{
+      b.disabled=true;
+      if(b.dataset.id===w.id)b.classList.add("correct");
+      if(b===btn&&!ok)b.classList.add("wrong");
+    });
+    if(ok){beep("ok");}else{beep("bad");s.mistakes.add(w.id);}
+    setTimeout(()=>{state.session.index++;renderExamQuestion();},ok?400:1100);
+  });
+}
+function renderExamResults(){
+  const s=state.session;
+  const total=s.questions.length;
+  const correct=s.questions.filter(q=>q.selected===q.w.id).length;
+  const pct=Math.round(correct/total*100);
+  const secs=Math.round((Date.now()-s.started)/1000);
+  const mins=Math.floor(secs/60),rem=secs%60;
+  const wrongWords=s.questions.filter(q=>q.selected!==q.w.id);
+  $("#contentArea").innerHTML=`
+    <div class="done-state">
+      <div class="big">${pct>=80?"🏆":pct>=60?"👍":"📚"}</div>
+      <p><b>Результат: ${correct} / ${total} (${pct}%)</b></p>
+      <p class="sub">Время: ${mins}:${String(rem).padStart(2,"0")}</p>
+      ${wrongWords.length?`
+        <div style="text-align:left;max-width:400px;margin:14px auto 0">
+          <div class="section-title">Ошибки:</div>
+          <div class="leech-list">
+            ${wrongWords.map(q=>`<div class="leech-item"><span class="pl">${esc(q.w.pl)}</span><span class="ru">${esc(q.w.ru)}</span></div>`).join("")}
+          </div>
+        </div>
+      `:""}
+      <div style="margin-top:16px">
+        <button class="btn-primary" id="againBtn">Ещё раз</button>
+        ${wrongWords.length?`<button class="btn-blue" id="retryBtn">Отработать ошибки</button>`:""}
+      </div>
+    </div>
+  `;
+  $("#againBtn").addEventListener("click",()=>modeExam());
+  if(wrongWords.length)$("#retryBtn").addEventListener("click",()=>{
+    state.session={mode:"exam",questions:wrongWords,index:0,started:Date.now(),finished:false,mistakes:new Set()};
+    renderExamQuestion();
+  });
+}
+
+/* ============================================================
+   СЛОВАРЬ
+   ============================================================ */
+function modeDictionary(){
+  state.session={mode:"dictionary",query:""};
+  renderDictionary();
+}
+function renderDictionary(){
+  const words=getWords(state.topic);
+  const q=norm(state.session.query||"");
+  const filtered=q?words.filter(w=>norm(w.pl).includes(q)||norm(w.ru).includes(q)):words;
+  $("#contentArea").innerHTML=`
+    <input class="dict-search" id="dictSearch" placeholder="Поиск по польскому или русскому..." value="${esc(state.session.query||"")}">
+    <div class="dict-list" id="dictList">
+      ${filtered.length===0
+        ?`<div style="text-align:center;color:var(--muted);padding:20px">Ничего не найдено</div>`
+        :filtered.map(w=>{
+          const p=getProgress(w.id);
+          return `<div class="dict-item" data-id="${w.id}">
+            <span class="pl">${esc(w.pl)}</span>
+            <span class="lvl">ур. ${p.level}/5</span>
+            <span class="ru">${esc(w.ru)}${genderLabel(w.g)?" · "+genderLabel(w.g):""}</span>
+          </div>`;
+        }).join("")}
+    </div>
+  `;
+  const inp=$("#dictSearch");
+  inp.addEventListener("input",e=>{
+    state.session.query=e.target.value;
+    renderDictionary();
+    const ni=$("#dictSearch");if(ni){ni.focus();ni.selectionStart=ni.selectionEnd=ni.value.length;}
+  });
+  $("#dictList").addEventListener("click",e=>{
+    const it=e.target.closest(".dict-item");if(!it)return;
+    const w=getWordById(it.dataset.id);if(w)speak(w.pl);
+  });
+}
+
+/* ============================================================
+   ДАШБОРД
+   ============================================================ */
+function modeDashboard(){
+  const words=allWords();
+  const total=words.length;
+  let known=0,learning=0,newWords=0;
+  const levelCounts=[0,0,0,0,0,0];
+  const leeches=[];
+  let dueNow=0;
+  for(const w of words){
+    const p=state.progress[w.id];
+    if(!p||p.seen===0){newWords++;continue;}
+    levelCounts[p.level]++;
+    if(p.level>=4)known++;else learning++;
+    if(p.wrong>=3&&p.level<2)leeches.push({id:w.id,w,wrong:p.wrong});
+    if(isDue(w.id))dueNow++;
+  }
+  levelCounts[0]+=newWords;
+  leeches.sort((a,b)=>b.wrong-a.wrong);
+
+  // 30-day activity
+  const days=[];
+  for(let i=29;i>=0;i--){
+    const d=new Date(Date.now()-i*86400000).toISOString().slice(0,10);
+    days.push({date:d,count:state.dailyHistory[d]||0});
+  }
+  const maxDay=Math.max(1,...days.map(d=>d.count));
+
+  // today's goal
+  const tk=todayKey();
+  const todayCount=state.daily.date===tk?Object.keys(state.daily.words).length:0;
+  const goalPct=Math.min(100,Math.round(todayCount/state.settings.goal*100));
+
+  $("#contentArea").innerHTML=`
+    <div class="dashboard">
+      <div class="due-card">
+        <div class="num">${dueNow}</div>
+        <div class="lbl">Слов к повторению</div>
+        ${dueNow>0?`<button class="btn-primary" style="margin-top:10px;background:#fff;color:var(--accent)" id="reviewBtn">Повторить сейчас</button>`:""}
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card green"><div class="num">${known}</div><div class="lbl">Изучено</div></div>
+        <div class="stat-card blue"><div class="num">${learning}</div><div class="lbl">В процессе</div></div>
+        <div class="stat-card"><div class="num">${newWords}</div><div class="lbl">Новых</div></div>
+        <div class="stat-card amber"><div class="num">${state.streak.n}</div><div class="lbl">Дней подряд</div></div>
+      </div>
+
+      <div>
+        <div class="section-title">Сегодня: ${todayCount} / ${state.settings.goal}</div>
+        <div class="progress-wrap"><div class="progress-fill" style="width:${goalPct}%"></div></div>
+      </div>
+
+      <div>
+        <div class="section-title">Распределение по уровням</div>
+        <div class="level-bars">
+          ${levelCounts.map((c,i)=>`<div class="level-bar"><div class="cnt">${c}</div><div class="bar" style="height:${Math.max(3,c/Math.max(1,...levelCounts)*60)}px"></div><div class="lvl">${i}</div></div>`).join("")}
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">Активность · 30 дней</div>
+        <div class="activity-bars">
+          ${days.map(d=>`<div class="activity-bar" style="height:${Math.max(2,d.count/maxDay*48)}px;opacity:${d.count===0?.15:.85}" title="${d.date}: ${d.count}"></div>`).join("")}
+        </div>
+      </div>
+
+      ${leeches.length?`
+        <div>
+          <div class="section-title">Трудные слова · ${leeches.length}</div>
+          <div class="leech-list">
+            ${leeches.slice(0,10).map(l=>`<div class="leech-item" data-id="${l.id}">
+              <span class="pl">${esc(l.w.pl)}</span>
+              <span class="ru">${esc(l.w.ru)}</span>
+              <span class="badge-wrong">${l.wrong}×</span>
+            </div>`).join("")}
+          </div>
+          <button class="btn-blue" id="practiceLeech" style="margin-top:8px">Отработать трудные слова</button>
+        </div>
+      `:""}
+    </div>
+  `;
+  const rb=$("#reviewBtn");
+  if(rb)rb.addEventListener("click",()=>{state.mode="flashcards";renderModeChips();syncURL();restartMode();});
+  const pb=$("#practiceLeech");
+  if(pb)pb.addEventListener("click",()=>{
+    state.session={mode:"flashcards",queue:shuffle(leeches.map(l=>l.id)),cur:null,flipped:false,mistakes:new Set()};
+    state.mode="flashcards";renderModeChips();syncURL();
+    nextFlashcard();
+  });
+  $$(".leech-item").forEach(el=>el.addEventListener("click",()=>{
+    const w=getWordById(el.dataset.id);if(w)speak(w.pl);
+  }));
+}
+
+/* ============================================================
+   DONE STATE
+   ============================================================ */
+function doneState(title,msg,mode){
+  const mistakes=state.session.mistakes?[...state.session.mistakes]:[];
+  $("#contentArea").innerHTML=`
+    <div class="done-state">
+      <div class="big">🎉</div>
+      <p><b>${esc(title)} — завершено!</b></p>
+      <p class="sub">${esc(msg)}</p>
+      ${mistakes.length?`<p style="color:var(--accent);font-weight:600;margin-top:8px">Ошибок: ${mistakes.length}</p>`:""}
+      <div style="margin-top:14px">
+        <button class="btn-primary" id="againBtn">Начать заново</button>
+        ${mistakes.length?`<button class="btn-blue" id="retryBtn">Отработать ошибки (${mistakes.length})</button>`:""}
+      </div>
+    </div>
+  `;
+  $("#againBtn").addEventListener("click",()=>restartMode());
+  if(mistakes.length)$("#retryBtn").addEventListener("click",()=>{
+    // перезапускаем тот же режим с ошибками
+    const m=state.mode;
+    state.session.queue=mistakes;
+    state.session.cur=null;
+    state.session.answered=false;
+    state.session.flipped=false;
+    state.session.mistakes=new Set();
+    if(m==="flashcards")nextFlashcard();
+    else if(m==="quiz_pl_ru"||m==="quiz_ru_pl")nextQuiz();
+    else if(m==="typing")nextTyping();
+    else if(m==="scramble")nextScramble();
+    else if(m==="listening")nextListening();
+    else if(m==="gender")nextGender();
+    else if(m==="cloze")nextCloze();
+    else restartMode();
+  });
+  setKeyHandler(ev=>{if(ev.key==="Enter"){const b=$("#againBtn");if(b){ev.preventDefault();b.click();}}});
+}
+
+/* ============================================================
+   ПЕРЕКЛЮЧАТЕЛИ
+   ============================================================ */
+function runMode(){
+  sessReset();
+  setKeyHandler(null);
+  const m=state.mode;
+  switch(m){
+    case "flashcards": return modeFlashcards();
+    case "quiz_pl_ru": return modeQuiz("quiz_pl_ru");
+    case "quiz_ru_pl": return modeQuiz("quiz_ru_pl");
+    case "typing": return modeTyping();
+    case "scramble": return modeScramble();
+    case "listening": return modeListening();
+    case "gender": return modeGender();
+    case "matching": return modeMatching();
+    case "cloze": return modeCloze();
+    case "exam": return modeExam();
+    case "dictionary": return modeDictionary();
+    case "dashboard": return modeDashboard();
+  }
+}
+function restartMode(){runMode();}
+
+function switchTopic(t){
+  if(t!=="all"&&!DATA[t])return;
+  state.topic=t;
+  saveState();syncURL();
+  renderTopicChips();renderProgress();
+  restartMode();
+}
+function switchMode(m){
+  if(!MODES.find(x=>x.id===m))return;
+  state.mode=m;
+  saveState();syncURL();
+  renderModeChips();
+  restartMode();
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function init(){
+  loadState();
+  readURL();
+  applySettings();
+  renderTopicChips();
+  renderModeChips();
+  renderHeader();
+  renderProgress();
+  renderSession();
+  renderSettings();
+  bindSettings();
+
+  $("#topicChips").addEventListener("click",e=>{
+    const b=e.target.closest("button[data-topic]");
+    if(b)switchTopic(b.dataset.topic);
+  });
+  $("#modeChips").addEventListener("click",e=>{
+    const b=e.target.closest("button[data-mode]");
+    if(b)switchMode(b.dataset.mode);
+  });
+
+  window.addEventListener("hashchange",()=>{
+    const before={t:state.topic,m:state.mode};
+    readURL();
+    if(before.t!==state.topic||before.m!==state.mode){
+      renderTopicChips();renderModeChips();renderProgress();restartMode();
+    }
+  });
+
+  // предупреждение об отсутствии польского голоса
+  setTimeout(()=>{
+    if(!hasPolishVoice&&!sessionStorage.getItem("voiceWarned")){
+      sessionStorage.setItem("voiceWarned","1");
+      const w=document.createElement("div");
+      w.className="voice-warn";
+      w.textContent="⚠️ В вашем браузере может отсутствовать польский голос. Озвучка может работать некорректно.";
+      const panel=document.querySelector(".panel");
+      if(panel)panel.parentNode.insertBefore(w,panel);
+      setTimeout(()=>w.remove(),6000);
+    }
+  },1000);
+
+  runMode();
+}
+
+/* PWA manifest (inline) */
+(function(){
+  try{
+    const icon=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="80" fill="#dc2626"/><text x="256" y="345" font-size="290" text-anchor="middle" fill="white" font-family="sans-serif" font-weight="bold">PL</text></svg>`;
+    const manifest={name:"Polski Trener",short_name:"Polski",description:"Тренажёр польского языка",start_url:".",display:"standalone",background_color:"#f6f8fb",theme_color:"#dc2626",icons:[{src:"data:image/svg+xml,"+encodeURIComponent(icon),sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};
+    const link=document.createElement("link");
+    link.rel="manifest";
+    link.href="data:application/manifest+json,"+encodeURIComponent(JSON.stringify(manifest));
+    document.head.appendChild(link);
+  }catch(e){}
+  if("serviceWorker" in navigator && location.protocol==="https:"){
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  }
+})();
+
+document.addEventListener("DOMContentLoaded",init);
+})();
+</script>
+</body>
+</html>
